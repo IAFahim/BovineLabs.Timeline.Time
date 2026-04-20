@@ -27,15 +27,14 @@ See `package.json` for exact versions.
 
 ### Time Scale
 - Track: `BovineLabs/Timeline/Time/Time Scale`
-- Binding: **None** (global — no track binding required)
+- Binding: `TimeScaleTargetAuthoring`
 - Purpose: control global time scale during timeline playback with smooth blending
 - Clip fields:
   - `timeScale` (0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward)
 
 ## Usage
 
-1. In Timeline, add a **BovineLabs -> Timeline -> Time -> Time Scale** track.
-2. Add Time Scale clips and set the desired `timeScale` value.
-3. No binding target needed — works instantly.
-
-**Note:** If using `timeScale = 0` (Freeze Frame), ensure the `PlayableDirector`'s Update Method is set to `Unscaled Game Time` or `DSP Clock`, otherwise the Timeline itself will freeze.
+1. Add a `TimeScaleTargetAuthoring` to a GameObject in your scene/subscene.
+2. In Timeline, add a **BovineLabs -> Timeline -> Time -> Time Scale** track.
+3. Bind the track to your `TimeScaleTargetAuthoring` GameObject.
+4. Add Time Scale clips and tune the `timeScale` value.

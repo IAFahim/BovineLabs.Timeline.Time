@@ -8,13 +8,9 @@ namespace BovineLabs.Timeline.Time.Authoring
     [Serializable]
     [TrackClipType(typeof(TimeScaleClip))]
     [TrackColor(0.85f, 0.85f, 0.85f)]
+    [TrackBindingType(typeof(TimeScaleTargetAuthoring))]
     [DisplayName("BovineLabs/Timeline/Time/Time Scale")]
     public class TimeScaleTrack : DOTSTrack
     {
-        protected override void Bake(BakingContext context)
-        {
-            context.Target = context.TrackEntity;
-            base.Bake(context);
-        }
     }
 }

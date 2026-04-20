@@ -7,7 +7,7 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     public class TimeScaleClip : DOTSClip, ITimelineClipAsset
     {
-        [Tooltip("Global time scale during this clip. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.\n\nNOTE: Ensure the PlayableDirector's Update Method is 'Unscaled Game Time' or 'DSP Clock', otherwise a scale of 0 will freeze the Timeline!")]
+        [Tooltip("Global time scale during this clip. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.")]
         [Range(0f, 10f)]
         public float timeScale = 0.1f;
 
