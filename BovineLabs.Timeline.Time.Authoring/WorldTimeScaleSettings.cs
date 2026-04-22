@@ -10,7 +10,7 @@ namespace BovineLabs.Timeline.Time.Authoring
     {
         [SerializeField] private float defaultTimeScale = 1f;
         
-        [Header("S-Tier Physics Optimization")]
+        [Header("Physics Optimization")]
         [Tooltip("Enable this so your physics don't get choppy during slow-mo. It smoothly downscales fixedDeltaTime.")]
         [SerializeField] private bool scaleFixedDeltaTime = true;
         [SerializeField] private float defaultFixedDeltaTime = 0.02f;
