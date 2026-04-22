@@ -5,10 +5,6 @@ using Unity.Properties;
 
 namespace BovineLabs.Timeline.Time
 {
-    public struct TimeScaleTarget : IComponentData
-    {
-    }
-
     public struct TimeScaleData
     {
         public float Scale;
@@ -18,11 +14,6 @@ namespace BovineLabs.Timeline.Time
     {
         public TimeScaleData AuthoredData;
         [CreateProperty] public TimeScaleData Value { get; set; }
-    }
-
-    public struct ActiveTimeScale : IComponentData, IEnableableComponent
-    {
-        public TimeScaleData Config;
     }
 
     public readonly struct TimeScaleMixer : IMixer<TimeScaleData>
