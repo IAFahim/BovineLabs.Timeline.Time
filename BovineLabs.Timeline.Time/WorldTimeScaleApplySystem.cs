@@ -17,7 +17,8 @@ namespace BovineLabs.Timeline.Time
                     
                     if (worldScale.ScaleFixedDeltaTime)
                     {
-                        UnityEngine.Time.fixedDeltaTime = worldScale.DefaultFixedDeltaTime * targetScale;
+                        UnityEngine.Time.fixedDeltaTime = UnityEngine.Mathf.Max(0.0001f,
+                            worldScale.DefaultFixedDeltaTime * targetScale);
                     }
                 }
             }
