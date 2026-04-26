@@ -7,11 +7,12 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     public class WorldTimeScaleClip : DOTSClip, ITimelineClipAsset
     {
-        [Tooltip("Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.")]
+        [Tooltip(
+            "Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.")]
         [Range(0f, 10f)]
         public float timeScale = 0.1f;
 
-        public override double duration => 2/60f;
+        public override double duration => 2 / 60f;
         public ClipCaps clipCaps => ClipCaps.Blending | ClipCaps.Looping;
 
         public override void Bake(Entity clipEntity, BakingContext context)

@@ -1,4 +1,5 @@
 using Unity.Entities;
+using UnityEngine;
 
 namespace BovineLabs.Timeline.Time
 {
@@ -9,17 +10,15 @@ namespace BovineLabs.Timeline.Time
         {
             if (SystemAPI.TryGetSingleton<WorldTimeScale>(out var worldScale))
             {
-                float targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
-                
-                if (UnityEngine.Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f)
+                var targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
+
+                if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f)
                 {
                     UnityEngine.Time.timeScale = targetScale;
-                    
+
                     if (worldScale.ScaleFixedDeltaTime)
-                    {
-                        UnityEngine.Time.fixedDeltaTime = UnityEngine.Mathf.Max(0.0001f,
+                        UnityEngine.Time.fixedDeltaTime = Mathf.Max(0.0001f,
                             worldScale.DefaultFixedDeltaTime * targetScale);
-                    }
                 }
             }
         }

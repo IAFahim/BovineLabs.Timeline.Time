@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using BovineLabs.Timeline.Authoring;
-using UnityEngine;
 using UnityEngine.Timeline;
 
 namespace BovineLabs.Timeline.Time.Authoring
@@ -9,7 +8,7 @@ namespace BovineLabs.Timeline.Time.Authoring
     [Serializable]
     [TrackClipType(typeof(WorldTimeScaleClip))]
     [TrackColor(0.95f, 0.95f, 0.95f)]
-    [DisplayName("BovineLabs/Timeline/Time/World Time Scale")]
+    [DisplayName("BovineLabs/Time/World Time Scale")]
     public class WorldTimeScaleTrack : DOTSTrack
     {
     }

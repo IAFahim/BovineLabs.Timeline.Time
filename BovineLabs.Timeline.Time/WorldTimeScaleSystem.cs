@@ -12,10 +12,11 @@ namespace BovineLabs.Timeline.Time
         {
             if (!SystemAPI.TryGetSingletonRW<WorldTimeScale>(out var worldScale)) return;
 
-            float totalWeight = 0f;
-            float blendedScale = 0f;
+            var totalWeight = 0f;
+            var blendedScale = 0f;
 
-            foreach (var (clipData, weight) in SystemAPI.Query<RefRO<WorldTimeScaleAnimated>, RefRO<ClipWeight>>().WithAll<ClipActive>())
+            foreach (var (clipData, weight) in SystemAPI.Query<RefRO<WorldTimeScaleAnimated>, RefRO<ClipWeight>>()
+                         .WithAll<ClipActive>())
             {
                 blendedScale += clipData.ValueRO.Value * weight.ValueRO.Value;
                 totalWeight += weight.ValueRO.Value;

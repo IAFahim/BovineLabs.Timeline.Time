@@ -1,4 +1,3 @@
-using BovineLabs.Core.Extensions;
 using BovineLabs.Essence.Data;
 using BovineLabs.Reaction.Data.Core;
 using BovineLabs.Timeline.Data;
@@ -6,7 +5,6 @@ using BovineLabs.Timeline.EntityLinks;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-
 using EntityLink = BovineLabs.Timeline.EntityLinks.Data.EntityLink;
 using EntityLinkSource = BovineLabs.Timeline.EntityLinks.Data.EntityLinkSource;
 
@@ -39,30 +37,25 @@ namespace BovineLabs.Timeline.Time
             [ReadOnly] public BufferLookup<EntityLink> Links;
             [ReadOnly] public BufferLookup<Stat> Stats;
 
-            private void Execute(in TrackBinding binding, in StatWorldTimeScaleData config, ref WorldTimeScaleAnimated animated)
+            private void Execute(in TrackBinding binding, in StatWorldTimeScaleData config,
+                ref WorldTimeScaleAnimated animated)
             {
-                if (binding.Value == Entity.Null || !this.TargetsLookup.TryGetComponent(binding.Value, out var targets))
-                {
-                    return;
-                }
+                if (binding.Value == Entity.Null ||
+                    !TargetsLookup.TryGetComponent(binding.Value, out var targets)) return;
 
                 if (!EntityLinkResolver.TryResolve(
                         binding.Value,
                         targets,
                         config.ReadRootFrom,
                         config.LinkKey,
-                        this.TargetsCustoms,
-                        this.Sources,
-                        this.Links,
+                        TargetsCustoms,
+                        Sources,
+                        Links,
                         out var target))
-                {
                     return;
-                }
 
-                if (this.Stats.TryGetBuffer(target, out var statsBuffer))
-                {
+                if (Stats.TryGetBuffer(target, out var statsBuffer))
                     animated.Value = statsBuffer.AsMap().GetValueFloat(config.ScaleStatKey);
-                }
             }
         }
     }

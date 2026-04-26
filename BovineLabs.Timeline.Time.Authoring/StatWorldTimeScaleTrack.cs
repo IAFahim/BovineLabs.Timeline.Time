@@ -8,7 +8,7 @@ namespace BovineLabs.Timeline.Time.Authoring
     [Serializable]
     [TrackClipType(typeof(StatWorldTimeScaleClip))]
     [TrackColor(0.85f, 0.95f, 0.95f)]
-    [DisplayName("BovineLabs/Timeline/Time/Stat World Time Scale")]
+    [DisplayName("BovineLabs/Time/Stat World Time Scale")]
     public class StatWorldTimeScaleTrack : DOTSTrack
     {
     }
