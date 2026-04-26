@@ -14,6 +14,7 @@ namespace BovineLabs.Timeline.Time
     {
         public float AuthoredData;
         public StatKey StatKey;
+        public Entity StatEntity;
         [CreateProperty] public float Value { get; set; }
     }
 }

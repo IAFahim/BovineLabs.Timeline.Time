@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using BovineLabs.Essence.Authoring;
 using BovineLabs.Timeline.Authoring;
 using UnityEngine.Timeline;
 
@@ -9,11 +10,12 @@ namespace BovineLabs.Timeline.Time.Authoring
     [TrackClipType(typeof(TimelineTimeScaleClip))]
     [TrackColor(0.2f, 0.8f, 0.4f)]
     [DisplayName("BovineLabs/Time/Timeline Time Scale")]
+    [TrackBindingType(typeof(StatAuthoring))]
     public class TimelineTimeScaleTrack : DOTSTrack
     {
         protected override void Bake(BakingContext context)
         {
-            context.Baker.AddComponent(context.Target, new TimelineTimeScaleMultiplier { Value = 1f });
+            context.Baker.AddComponent(context.Timer, new TimelineTimeScaleMultiplier { Value = 1f });
             base.Bake(context);
         }
     }

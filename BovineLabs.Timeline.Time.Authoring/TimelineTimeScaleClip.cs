@@ -20,12 +20,13 @@ namespace BovineLabs.Timeline.Time.Authoring
 
         public override void Bake(Entity clipEntity, BakingContext context)
         {
-            context.Baker.SetComponent(clipEntity, new TrackBinding { Value = context.Target });
+            context.Baker.SetComponent(clipEntity, new TrackBinding { Value = context.Timer });
             
             context.Baker.AddComponent(clipEntity, new TimelineTimeScaleAnimated 
             { 
                 AuthoredData = timeScale,
-                StatKey = this.stat != null ? this.stat.Key : default
+                StatKey = this.stat != null ? this.stat.Key : default,
+                StatEntity = context.Binding != null ? context.Binding.Target : Entity.Null
             });
 
             base.Bake(clipEntity, context);

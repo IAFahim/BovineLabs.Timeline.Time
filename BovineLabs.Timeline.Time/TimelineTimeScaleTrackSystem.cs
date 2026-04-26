@@ -63,9 +63,9 @@ namespace BovineLabs.Timeline.Time
         {
             [ReadOnly] public BufferLookup<Stat> Stats;
 
-            private void Execute(in TrackBinding binding, ref TimelineTimeScaleAnimated animated)
+            private void Execute(ref TimelineTimeScaleAnimated animated)
             {
-                if (animated.StatKey.Value != 0 && this.Stats.TryGetBuffer(binding.Value, out var statsBuffer))
+                if (animated.StatKey.Value != 0 && animated.StatEntity != Entity.Null && this.Stats.TryGetBuffer(animated.StatEntity, out var statsBuffer))
                 {
                     animated.Value = statsBuffer.AsMap().GetValueFloat(animated.StatKey);
                 }
