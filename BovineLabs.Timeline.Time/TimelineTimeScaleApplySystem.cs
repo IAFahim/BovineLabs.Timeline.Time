@@ -1,6 +1,8 @@
+using BovineLabs.HitStop.Data;
 using BovineLabs.Timeline.Data.Schedular;
 using BovineLabs.Timeline.Schedular;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace BovineLabs.Timeline.Time
@@ -13,18 +15,30 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            state.Dependency = new ApplyTimeScaleJob().ScheduleParallel(state.Dependency);
+            state.Dependency = new ApplyTimeScaleJob
+            {
+                HitStops = SystemAPI.GetComponentLookup<HitStopState>(true)
+            }.ScheduleParallel(state.Dependency);
         }
 
         [BurstCompile]
         private partial struct ApplyTimeScaleJob : IJobEntity
         {
-            private void Execute(ref ClockData clock, in TimelineTimeScaleMultiplier multiplier)
+            [ReadOnly] public ComponentLookup<HitStopState> HitStops;
+
+            private void Execute(Entity entity, ref ClockData clock, in TimelineTimeScaleMultiplier multiplier)
             {
-                if (multiplier.Value != 1f)
+                var timeScale = multiplier.Value;
+
+                if (HitStops.TryGetComponent(entity, out var hitStop) && hitStop.RemainingTime > 0f)
                 {
-                    clock.DeltaTime *= (double)multiplier.Value;
-                    clock.Scale *= (double)multiplier.Value;
+                    timeScale = 0.0001f;
+                }
+
+                if (timeScale != 1f)
+                {
+                    clock.DeltaTime *= (double)timeScale;
+                    clock.Scale *= (double)timeScale;
                 }
             }
         }

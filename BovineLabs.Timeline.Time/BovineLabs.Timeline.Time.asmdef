@@ -7,11 +7,13 @@
     "BovineLabs.Essence.Data",
     "BovineLabs.Timeline",
     "BovineLabs.Timeline.Data",
+    "BovineLabs.HitStop.Data",
     "BovineLabs.Timeline.Time.Data",
     "Unity.Burst",
     "Unity.Collections",
     "Unity.Entities",
-    "Unity.Mathematics"
+    "Unity.Mathematics",
+    "BovineLabs.Reaction.Data"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
