@@ -1,9 +1,12 @@
+using BovineLabs.Timeline.Data;
 using Unity.Entities;
+using Unity.Properties;
 
 namespace BovineLabs.Timeline.Time
 {
-    public struct WorldTimeScaleAnimated : IComponentData
+    public struct WorldTimeScaleAnimated : IAnimatedComponent<float>
     {
-        public float Value;
+        public float AuthoredData;
+        [CreateProperty] public float Value { get; set; }
     }
 }

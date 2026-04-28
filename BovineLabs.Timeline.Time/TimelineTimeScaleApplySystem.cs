@@ -30,7 +30,9 @@ namespace BovineLabs.Timeline.Time
             {
                 var timeScale = multiplier.Value;
 
-                if (HitStops.TryGetComponent(entity, out var hitStop) && hitStop.RemainingTime > 0f)
+                if (HitStops.HasComponent(entity) &&
+                    HitStops.IsComponentEnabled(entity) &&
+                    HitStops[entity].RemainingTime > 0f)
                 {
                     timeScale = 0.0001f;
                 }

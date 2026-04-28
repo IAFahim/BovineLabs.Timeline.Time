@@ -19,6 +19,7 @@ namespace BovineLabs.Timeline.Time.Authoring
         {
             context.Baker.AddComponent(clipEntity, new WorldTimeScaleAnimated
             {
+                AuthoredData = timeScale,
                 Value = timeScale
             });
 
