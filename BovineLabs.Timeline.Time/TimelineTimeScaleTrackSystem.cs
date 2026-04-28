@@ -32,7 +32,7 @@ namespace BovineLabs.Timeline.Time
         public void OnUpdate(ref SystemState state)
         {
             state.Dependency = new ResetJob().ScheduleParallel(state.Dependency);
-            
+
             state.Dependency = new PrepareJob
             {
                 Stats = SystemAPI.GetBufferLookup<Stat>(true)
@@ -65,14 +65,11 @@ namespace BovineLabs.Timeline.Time
 
             private void Execute(ref TimelineTimeScaleAnimated animated)
             {
-                if (animated.StatKey.Value != 0 && animated.StatEntity != Entity.Null && this.Stats.TryGetBuffer(animated.StatEntity, out var statsBuffer))
-                {
+                if (animated.StatKey.Value != 0 && animated.StatEntity != Entity.Null &&
+                    Stats.TryGetBuffer(animated.StatEntity, out var statsBuffer))
                     animated.Value = statsBuffer.AsMap().GetValueFloat(animated.StatKey);
-                }
                 else
-                {
                     animated.Value = animated.AuthoredData;
-                }
             }
         }
 
@@ -80,7 +77,9 @@ namespace BovineLabs.Timeline.Time
         private struct WriteMultiplierJob : IJobParallelHashMapDefer
         {
             [ReadOnly] public NativeParallelHashMap<Entity, MixData<float>>.ReadOnly BlendData;
-            [NativeDisableParallelForRestriction] public UnsafeComponentLookup<TimelineTimeScaleMultiplier> MultiplierLookup;
+
+            [NativeDisableParallelForRestriction]
+            public UnsafeComponentLookup<TimelineTimeScaleMultiplier> MultiplierLookup;
 
             public void ExecuteNext(int entryIndex, int jobIndex)
             {

@@ -33,14 +33,12 @@ namespace BovineLabs.Timeline.Time
                 if (HitStops.HasComponent(entity) &&
                     HitStops.IsComponentEnabled(entity) &&
                     HitStops[entity].RemainingTime > 0f)
-                {
                     timeScale = 0.0001f;
-                }
 
                 if (timeScale != 1f)
                 {
                     clock.DeltaTime *= (double)timeScale;
-                    clock.Scale *= (double)timeScale;
+                    clock.Scale *= timeScale;
                 }
             }
         }

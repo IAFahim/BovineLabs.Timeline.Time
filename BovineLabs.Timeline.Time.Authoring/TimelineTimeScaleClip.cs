@@ -23,11 +23,11 @@ namespace BovineLabs.Timeline.Time.Authoring
             // Time scale clips target the timeline's clock entity (context.Timer), not the bound
             // StatAuthoring entity — the multiplier is applied per-timeline, not per-bound-entity.
             context.Baker.SetComponent(clipEntity, new TrackBinding { Value = context.Timer });
-            
-            context.Baker.AddComponent(clipEntity, new TimelineTimeScaleAnimated 
-            { 
+
+            context.Baker.AddComponent(clipEntity, new TimelineTimeScaleAnimated
+            {
                 AuthoredData = timeScale,
-                StatKey = this.stat != null ? this.stat.Key : default,
+                StatKey = stat != null ? stat.Key : default,
                 StatEntity = context.Binding != null ? context.Binding.Target : Entity.Null
             });
 
