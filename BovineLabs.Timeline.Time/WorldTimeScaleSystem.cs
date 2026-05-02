@@ -1,6 +1,8 @@
 using BovineLabs.Timeline.Data;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace BovineLabs.Timeline.Time
 {
@@ -10,26 +12,53 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (!SystemAPI.TryGetSingletonRW<WorldTimeScale>(out var worldScale)) return;
+            if (!SystemAPI.HasSingleton<WorldTimeScale>()) return;
 
-            var totalWeight = 0f;
-            var blendedScale = 0f;
+            var accum = new NativeReference<float2>(state.WorldUpdateAllocator);
 
-            foreach (var (clipData, weight) in SystemAPI.Query<RefRO<WorldTimeScaleAnimated>, RefRO<ClipWeight>>()
-                         .WithAll<ClipActive>())
+            state.Dependency = new AccumulateJob
             {
-                blendedScale += clipData.ValueRO.Value * weight.ValueRO.Value;
-                totalWeight += weight.ValueRO.Value;
+                Accumulator = accum
+            }.Schedule(state.Dependency);
+
+            state.Dependency = new ApplyJob
+            {
+                Accumulator = accum
+            }.Schedule(state.Dependency);
+        }
+
+        [BurstCompile]
+        [WithAll(typeof(ClipActive))]
+        private partial struct AccumulateJob : IJobEntity
+        {
+            public NativeReference<float2> Accumulator;
+
+            private void Execute(in WorldTimeScaleAnimated clipData, in ClipWeight weight)
+            {
+                var val = Accumulator.Value;
+                val.x += clipData.Value * weight.Value;
+                val.y += weight.Value;
+                Accumulator.Value = val;
             }
+        }
 
-            if (totalWeight > 0f)
+        [BurstCompile]
+        private partial struct ApplyJob : IJobEntity
+        {
+            [ReadOnly] public NativeReference<float2> Accumulator;
+
+            private void Execute(ref WorldTimeScale worldScale)
             {
-                worldScale.ValueRW.ActiveScale = blendedScale / totalWeight;
-                worldScale.ValueRW.IsActive = true;
-            }
-            else
-            {
-                worldScale.ValueRW.IsActive = false;
+                var val = Accumulator.Value;
+                if (val.y > 0f)
+                {
+                    worldScale.ActiveScale = val.x / val.y;
+                    worldScale.IsActive = true;
+                }
+                else
+                {
+                    worldScale.IsActive = false;
+                }
             }
         }
     }

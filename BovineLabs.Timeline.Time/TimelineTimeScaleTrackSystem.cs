@@ -14,12 +14,14 @@ namespace BovineLabs.Timeline.Time
     {
         private TrackBlendImpl<float, TimelineTimeScaleAnimated> blendImpl;
         private UnsafeComponentLookup<TimelineTimeScaleMultiplier> multiplierLookup;
+        private BufferLookup<Stat> statsLookup;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             blendImpl.OnCreate(ref state);
             multiplierLookup = state.GetUnsafeComponentLookup<TimelineTimeScaleMultiplier>();
+            statsLookup = state.GetBufferLookup<Stat>(true);
         }
 
         [BurstCompile]
@@ -31,14 +33,16 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            multiplierLookup.Update(ref state);
+            statsLookup.Update(ref state);
+
             state.Dependency = new ResetJob().ScheduleParallel(state.Dependency);
 
             state.Dependency = new PrepareJob
             {
-                Stats = SystemAPI.GetBufferLookup<Stat>(true)
+                Stats = statsLookup
             }.ScheduleParallel(state.Dependency);
 
-            multiplierLookup.Update(ref state);
             var blendData = blendImpl.Update(ref state);
 
             state.Dependency = new WriteMultiplierJob

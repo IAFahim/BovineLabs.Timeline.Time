@@ -12,12 +12,22 @@ namespace BovineLabs.Timeline.Time
     [UpdateBefore(typeof(TimerUpdateSystem))]
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
+        private ComponentLookup<HitStopState> hitStopsLookup;
+
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            hitStopsLookup = state.GetComponentLookup<HitStopState>(true);
+        }
+
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            hitStopsLookup.Update(ref state);
+
             state.Dependency = new ApplyTimeScaleJob
             {
-                HitStops = SystemAPI.GetComponentLookup<HitStopState>(true)
+                HitStops = hitStopsLookup
             }.ScheduleParallel(state.Dependency);
         }
 
@@ -30,10 +40,12 @@ namespace BovineLabs.Timeline.Time
             {
                 var timeScale = multiplier.Value;
 
-                if (HitStops.HasComponent(entity) &&
+                if (HitStops.TryGetComponent(entity, out var hitStop) &&
                     HitStops.IsComponentEnabled(entity) &&
-                    HitStops[entity].RemainingTime > 0f)
+                    hitStop.RemainingTime > 0f)
+                {
                     timeScale = 0.0001f;
+                }
 
                 if (timeScale != 1f)
                 {
