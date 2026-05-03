@@ -14,7 +14,7 @@ namespace BovineLabs.Timeline.Time
         {
             if (!SystemAPI.HasSingleton<WorldTimeScale>()) return;
 
-            var accum = new NativeReference<float2>(state.WorldUpdateAllocator);
+            var accum = new NativeReference<float2>(state.WorldUpdateAllocator) { Value = float2.zero };
 
             state.Dependency = new AccumulateJob
             {
