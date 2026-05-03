@@ -12,7 +12,7 @@ namespace BovineLabs.Timeline.Time.Authoring
         [Range(0f, 10f)]
         public float timeScale = 0.1f;
 
-        public override double duration => 2 / 60f;
+        public override double duration => 1;
         public ClipCaps clipCaps => ClipCaps.Blending | ClipCaps.Looping;
 
         public override void Bake(Entity clipEntity, BakingContext context)

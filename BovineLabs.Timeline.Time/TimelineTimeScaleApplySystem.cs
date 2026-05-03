@@ -1,3 +1,5 @@
+using BovineLabs.Core.Extensions;
+using BovineLabs.Core.Iterators;
 using BovineLabs.HitStop.Data;
 using BovineLabs.Timeline.Data.Schedular;
 using BovineLabs.Timeline.Schedular;
@@ -12,12 +14,12 @@ namespace BovineLabs.Timeline.Time
     [UpdateBefore(typeof(TimerUpdateSystem))]
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
-        private ComponentLookup<HitStopState> hitStopsLookup;
+        private UnsafeComponentLookup<HitStopState> hitStopsLookup;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            hitStopsLookup = state.GetComponentLookup<HitStopState>(true);
+            hitStopsLookup = state.GetUnsafeComponentLookup<HitStopState>(true);
         }
 
         [BurstCompile]
@@ -34,7 +36,7 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         private partial struct ApplyTimeScaleJob : IJobEntity
         {
-            [ReadOnly] public ComponentLookup<HitStopState> HitStops;
+            [ReadOnly] public UnsafeComponentLookup<HitStopState> HitStops;
 
             private void Execute(Entity entity, ref ClockData clock, in TimelineTimeScaleMultiplier multiplier)
             {

@@ -38,17 +38,18 @@ namespace BovineLabs.Timeline.Time
         {
             ref var worldScale = ref BurstTrampoline.ArgumentsFromPtr<WorldTimeScale>(argumentsPtr, argumentsSize);
             var targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
+            var defaultFixedDeltaTime = Mathf.Max(0.0001f, worldScale.DefaultFixedDeltaTime);
+            var targetFixedDeltaTime = worldScale.ScaleFixedDeltaTime ? defaultFixedDeltaTime * targetScale : defaultFixedDeltaTime;
+            targetFixedDeltaTime = Mathf.Max(0.0001f, targetFixedDeltaTime);
 
-            if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) <= 0.001f)
+            if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f)
             {
-                return;
+                UnityEngine.Time.timeScale = targetScale;
             }
 
-            UnityEngine.Time.timeScale = targetScale;
-
-            if (worldScale.ScaleFixedDeltaTime)
+            if (Mathf.Abs(UnityEngine.Time.fixedDeltaTime - targetFixedDeltaTime) > 0.00001f)
             {
-                UnityEngine.Time.fixedDeltaTime = Mathf.Max(0.0001f, worldScale.DefaultFixedDeltaTime * targetScale);
+                UnityEngine.Time.fixedDeltaTime = targetFixedDeltaTime;
             }
         }
 

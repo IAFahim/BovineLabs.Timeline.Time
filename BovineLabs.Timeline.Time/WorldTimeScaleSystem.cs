@@ -10,20 +10,27 @@ namespace BovineLabs.Timeline.Time
     public partial struct WorldTimeScaleSystem : ISystem
     {
         [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<WorldTimeScale>();
+        }
+
+        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (!SystemAPI.HasSingleton<WorldTimeScale>()) return;
-
-            var accum = new NativeReference<float2>(state.WorldUpdateAllocator) { Value = float2.zero };
+            var mix = new NativeReference<MixData<float>>(state.WorldUpdateAllocator)
+            {
+                Value = new MixData<float> { Weights = float4.zero }
+            };
 
             state.Dependency = new AccumulateJob
             {
-                Accumulator = accum
+                Mix = mix
             }.Schedule(state.Dependency);
 
             state.Dependency = new ApplyJob
             {
-                Accumulator = accum
+                Mix = mix
             }.Schedule(state.Dependency);
         }
 
@@ -31,34 +38,64 @@ namespace BovineLabs.Timeline.Time
         [WithAll(typeof(ClipActive))]
         private partial struct AccumulateJob : IJobEntity
         {
-            public NativeReference<float2> Accumulator;
+            public NativeReference<MixData<float>> Mix;
 
             private void Execute(in WorldTimeScaleAnimated clipData, in ClipWeight weight)
             {
-                var val = Accumulator.Value;
-                val.x += clipData.Value * weight.Value;
-                val.y += weight.Value;
-                Accumulator.Value = val;
+                var mix = Mix.Value;
+                AddWeighted(ref mix, clipData.Value, weight.Value);
+                Mix.Value = mix;
+            }
+
+            private static void AddWeighted(ref MixData<float> mix, float value, float weight)
+            {
+                if (weight <= math.EPSILON)
+                {
+                    return;
+                }
+
+                if (weight > mix.Weights.x)
+                {
+                    mix.Weights = mix.Weights.xxyz;
+                    mix.Weights.x = weight;
+                    mix.Value4 = mix.Value3;
+                    mix.Value3 = mix.Value2;
+                    mix.Value2 = mix.Value1;
+                    mix.Value1 = value;
+                }
+                else if (weight > mix.Weights.y)
+                {
+                    mix.Weights = mix.Weights.xxyz;
+                    mix.Weights.y = weight;
+                    mix.Value4 = mix.Value3;
+                    mix.Value3 = mix.Value2;
+                    mix.Value2 = value;
+                }
+                else if (weight > mix.Weights.z)
+                {
+                    mix.Weights = mix.Weights.xyyz;
+                    mix.Weights.z = weight;
+                    mix.Value4 = mix.Value3;
+                    mix.Value3 = value;
+                }
+                else if (weight > mix.Weights.w)
+                {
+                    mix.Weights.w = weight;
+                    mix.Value4 = value;
+                }
             }
         }
 
         [BurstCompile]
         private partial struct ApplyJob : IJobEntity
         {
-            [ReadOnly] public NativeReference<float2> Accumulator;
+            [ReadOnly] public NativeReference<MixData<float>> Mix;
 
             private void Execute(ref WorldTimeScale worldScale)
             {
-                var val = Accumulator.Value;
-                if (val.y > 0f)
-                {
-                    worldScale.ActiveScale = val.x / val.y;
-                    worldScale.IsActive = true;
-                }
-                else
-                {
-                    worldScale.IsActive = false;
-                }
+                var mix = Mix.Value;
+                worldScale.ActiveScale = JobHelpers.Blend<float, FloatMixer>(ref mix, worldScale.DefaultScale);
+                worldScale.IsActive = mix.Weights.x > math.EPSILON;
             }
         }
     }
