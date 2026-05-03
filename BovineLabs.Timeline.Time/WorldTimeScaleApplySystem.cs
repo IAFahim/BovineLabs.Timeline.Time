@@ -8,6 +8,8 @@ namespace BovineLabs.Timeline.Time
     {
         protected override void OnUpdate()
         {
+            this.Dependency.Complete();
+
             if (SystemAPI.TryGetSingleton<WorldTimeScale>(out var worldScale))
             {
                 var targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
