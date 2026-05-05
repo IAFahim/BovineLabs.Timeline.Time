@@ -1,3 +1,4 @@
+using BovineLabs.Essence.Data;
 using NUnit.Framework;
 using Unity.Entities;
 
@@ -42,7 +43,7 @@ namespace BovineLabs.Timeline.Time.Tests
         public void Default_StatKeyIsDefault()
         {
             var a = new TimelineTimeScaleAnimated();
-            Assert.AreEqual(default, a.StatKey);
+            Assert.AreEqual(default(StatKey), a.StatKey);
         }
 
         [Test]
