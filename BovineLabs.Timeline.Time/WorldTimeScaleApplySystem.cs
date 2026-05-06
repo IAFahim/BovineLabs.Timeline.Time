@@ -1,6 +1,7 @@
 using BovineLabs.Core.Utility;
 using Unity.Burst;
 using Unity.Entities;
+using UnityEditor;
 using UnityEngine;
 
 namespace BovineLabs.Timeline.Time
@@ -10,7 +11,7 @@ namespace BovineLabs.Timeline.Time
     public unsafe partial struct WorldTimeScaleApplySystem : ISystem
     {
 #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
+        [InitializeOnLoadMethod]
 #else
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 #endif
@@ -29,9 +30,7 @@ namespace BovineLabs.Timeline.Time
         public void OnUpdate(ref SystemState state)
         {
             foreach (var worldScale in SystemAPI.Query<RefRO<WorldTimeScale>>())
-            {
                 Burst.WorldTimeScale.Data.Invoke(worldScale.ValueRO);
-            }
         }
 
         private static void ApplyWorldTimeScalePacked(void* argumentsPtr, int argumentsSize)
@@ -39,18 +38,15 @@ namespace BovineLabs.Timeline.Time
             ref var worldScale = ref BurstTrampoline.ArgumentsFromPtr<WorldTimeScale>(argumentsPtr, argumentsSize);
             var targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
             var defaultFixedDeltaTime = Mathf.Max(0.0001f, worldScale.DefaultFixedDeltaTime);
-            var targetFixedDeltaTime = worldScale.ScaleFixedDeltaTime ? defaultFixedDeltaTime * targetScale : defaultFixedDeltaTime;
+            var targetFixedDeltaTime = worldScale.ScaleFixedDeltaTime
+                ? defaultFixedDeltaTime * targetScale
+                : defaultFixedDeltaTime;
             targetFixedDeltaTime = Mathf.Max(0.0001f, targetFixedDeltaTime);
 
-            if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f)
-            {
-                UnityEngine.Time.timeScale = targetScale;
-            }
+            if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f) UnityEngine.Time.timeScale = targetScale;
 
             if (Mathf.Abs(UnityEngine.Time.fixedDeltaTime - targetFixedDeltaTime) > 0.00001f)
-            {
                 UnityEngine.Time.fixedDeltaTime = targetFixedDeltaTime;
-            }
         }
 
         private static class Burst

@@ -49,10 +49,7 @@ namespace BovineLabs.Timeline.Time
 
             private static void AddWeighted(ref MixData<float> mix, float value, float weight)
             {
-                if (weight <= math.EPSILON)
-                {
-                    return;
-                }
+                if (weight <= math.EPSILON) return;
 
                 if (weight > mix.Weights.x)
                 {

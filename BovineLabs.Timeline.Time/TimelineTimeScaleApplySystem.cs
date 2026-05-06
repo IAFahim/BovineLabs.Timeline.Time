@@ -45,9 +45,7 @@ namespace BovineLabs.Timeline.Time
                 if (HitStops.TryGetComponent(entity, out var hitStop) &&
                     HitStops.IsComponentEnabled(entity) &&
                     hitStop.RemainingTime > 0f)
-                {
                     timeScale = 0.0001f;
-                }
 
                 if (timeScale != 1f)
                 {
