@@ -12,43 +12,43 @@ namespace BovineLabs.Timeline.Time
     [UpdateInGroup(typeof(TimelineComponentAnimationGroup))]
     public partial struct TimelineTimeScaleTrackSystem : ISystem
     {
-        private TrackBlendImpl<float, TimelineTimeScaleAnimated> blendImpl;
-        private UnsafeComponentLookup<TimelineTimeScaleMultiplier> multiplierLookup;
-        private BufferLookup<Stat> statsLookup;
+        private TrackBlendImpl<float, TimelineTimeScaleAnimated> _blendImpl;
+        private UnsafeComponentLookup<TimelineTimeScaleMultiplier> _multiplierLookup;
+        private BufferLookup<Stat> _statsLookup;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            blendImpl.OnCreate(ref state);
-            multiplierLookup = state.GetUnsafeComponentLookup<TimelineTimeScaleMultiplier>();
-            statsLookup = state.GetBufferLookup<Stat>(true);
+            _blendImpl.OnCreate(ref state);
+            _multiplierLookup = state.GetUnsafeComponentLookup<TimelineTimeScaleMultiplier>();
+            _statsLookup = state.GetBufferLookup<Stat>(true);
         }
 
         [BurstCompile]
         public void OnDestroy(ref SystemState state)
         {
-            blendImpl.OnDestroy(ref state);
+            _blendImpl.OnDestroy(ref state);
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            multiplierLookup.Update(ref state);
-            statsLookup.Update(ref state);
+            _multiplierLookup.Update(ref state);
+            _statsLookup.Update(ref state);
 
             state.Dependency = new ResetJob().ScheduleParallel(state.Dependency);
 
             state.Dependency = new PrepareJob
             {
-                Stats = statsLookup
+                Stats = _statsLookup
             }.ScheduleParallel(state.Dependency);
 
-            var blendData = blendImpl.Update(ref state);
+            var blendData = _blendImpl.Update(ref state);
 
             state.Dependency = new WriteMultiplierJob
             {
                 BlendData = blendData,
-                MultiplierLookup = multiplierLookup
+                MultiplierLookup = _multiplierLookup
             }.ScheduleParallel(blendData, 64, state.Dependency);
         }
 

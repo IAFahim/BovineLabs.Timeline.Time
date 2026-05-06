@@ -7,12 +7,17 @@ using Unity.Mathematics;
 namespace BovineLabs.Timeline.Time
 {
     [UpdateInGroup(typeof(TimelineComponentAnimationGroup))]
+    [WorldSystemFilter(
+        WorldSystemFilterFlags.LocalSimulation |
+        WorldSystemFilterFlags.ClientSimulation |
+        WorldSystemFilterFlags.ServerSimulation |
+        WorldSystemFilterFlags.Presentation
+    )]
     public partial struct WorldTimeScaleSystem : ISystem
     {
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<WorldTimeScale>();
         }
 
         [BurstCompile]
