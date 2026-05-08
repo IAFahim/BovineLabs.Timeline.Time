@@ -1,5 +1,4 @@
 using BovineLabs.Core.Extensions;
-using BovineLabs.Core.Iterators;
 using BovineLabs.HitStop.Data;
 using BovineLabs.Timeline.Data.Schedular;
 using BovineLabs.Timeline.Schedular;
@@ -14,29 +13,34 @@ namespace BovineLabs.Timeline.Time
     [UpdateBefore(typeof(TimerUpdateSystem))]
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
-        private UnsafeComponentLookup<HitStopState> hitStopsLookup;
+        private ComponentLookup<HitStopState> hitStopsLookup;
+        private ComponentLookup<HitStopRemainingTime> remainingLookup;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            hitStopsLookup = state.GetUnsafeComponentLookup<HitStopState>(true);
+            hitStopsLookup = state.GetComponentLookup<HitStopState>(true);
+            remainingLookup = state.GetComponentLookup<HitStopRemainingTime>(true);
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             hitStopsLookup.Update(ref state);
+            remainingLookup.Update(ref state);
 
             state.Dependency = new ApplyTimeScaleJob
             {
-                HitStops = hitStopsLookup
+                HitStops = hitStopsLookup,
+                Remaining = remainingLookup
             }.ScheduleParallel(state.Dependency);
         }
 
         [BurstCompile]
         private partial struct ApplyTimeScaleJob : IJobEntity
         {
-            [ReadOnly] public UnsafeComponentLookup<HitStopState> HitStops;
+            [ReadOnly] public ComponentLookup<HitStopState> HitStops;
+            [ReadOnly] public ComponentLookup<HitStopRemainingTime> Remaining;
 
             private void Execute(Entity entity, ref ClockData clock, in TimelineTimeScaleMultiplier multiplier)
             {
@@ -44,7 +48,8 @@ namespace BovineLabs.Timeline.Time
 
                 if (HitStops.TryGetComponent(entity, out var hitStop) &&
                     HitStops.IsComponentEnabled(entity) &&
-                    hitStop.RemainingTime > 0f)
+                    Remaining.TryGetComponent(entity, out var remaining) &&
+                    remaining.Value > 0f)
                     timeScale = 0.0001f;
 
                 if (timeScale != 1f)
