@@ -10,6 +10,7 @@ namespace BovineLabs.Timeline.Time
     [UpdateInGroup(typeof(ScheduleSystemGroup))]
     [UpdateAfter(typeof(ClockUpdateSystem))]
     [UpdateBefore(typeof(TimerUpdateSystem))]
+    [Unity.Entities.WorldSystemFilter(Unity.Entities.WorldSystemFilterFlags.LocalSimulation | Unity.Entities.WorldSystemFilterFlags.ClientSimulation | Unity.Entities.WorldSystemFilterFlags.ServerSimulation)]
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
         private ComponentLookup<HitStopState> hitStopsLookup;
