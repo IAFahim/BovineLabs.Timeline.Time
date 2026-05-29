@@ -1,3 +1,4 @@
+using BovineLabs.Core.Jobs;
 using BovineLabs.Timeline.Data;
 using Unity.Burst;
 using Unity.Collections;
@@ -6,6 +7,13 @@ using Unity.Mathematics;
 
 namespace BovineLabs.Timeline.Time
 {
+    /// <summary>
+    /// Applies timeline time scale clips to the WorldTimeScale singleton.
+    ///
+    /// Uses a simple accumulate-then-apply pattern since WorldTimeScale is a singleton
+    /// (not per-entity like transform tracks). The accumulation uses the standard
+    /// MixData shift-register to support up to 4 overlapping clips with FloatMixer blending.
+    /// </summary>
     [UpdateInGroup(typeof(TimelineComponentAnimationGroup))]
     [WorldSystemFilter(
         WorldSystemFilterFlags.LocalSimulation |
@@ -13,6 +21,7 @@ namespace BovineLabs.Timeline.Time
         WorldSystemFilterFlags.ServerSimulation |
         WorldSystemFilterFlags.Presentation
     )]
+    [BurstCompile]
     public partial struct WorldTimeScaleSystem : ISystem
     {
         [BurstCompile]
