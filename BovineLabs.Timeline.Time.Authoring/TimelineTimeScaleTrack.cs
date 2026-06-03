@@ -8,7 +8,7 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     [Serializable]
     [TrackClipType(typeof(TimelineTimeScaleClip))]
-    [TrackColor(0.2f, 0.8f, 0.4f)]
+    [TrackColor(0.20f, 0.75f, 0.45f)]
     [DisplayName("BovineLabs/Time/Timeline Time Scale")]
     [TrackBindingType(typeof(StatAuthoring))]
     public class TimelineTimeScaleTrack : DOTSTrack
