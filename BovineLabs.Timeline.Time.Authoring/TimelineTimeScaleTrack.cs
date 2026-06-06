@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using BovineLabs.Core.Authoring.EntityCommands;
 using BovineLabs.Essence.Authoring;
 using BovineLabs.Timeline.Authoring;
 using UnityEngine.Timeline;
@@ -15,7 +16,8 @@ namespace BovineLabs.Timeline.Time.Authoring
     {
         protected override void Bake(BakingContext context)
         {
-            context.Baker.AddComponent(context.Timer, new TimelineTimeScaleMultiplier { Value = 1f });
+            var commands = new BakerCommands(context.Baker, context.Timer);
+            commands.AddComponent(new TimelineTimeScaleMultiplier { Value = 1f });
             base.Bake(context);
         }
     }
