@@ -1,7 +1,6 @@
 using BovineLabs.Core.Authoring.EntityCommands;
 using BovineLabs.Essence.Authoring;
 using BovineLabs.Timeline.Authoring;
-using BovineLabs.Timeline.Data;
 using BovineLabs.Timeline.Time.Data.Builders;
 using Unity.Entities;
 using UnityEngine;

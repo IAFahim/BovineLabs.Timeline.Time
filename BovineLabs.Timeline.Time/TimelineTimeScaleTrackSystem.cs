@@ -10,7 +10,8 @@ using Unity.Entities;
 namespace BovineLabs.Timeline.Time
 {
     [UpdateInGroup(typeof(TimelineComponentAnimationGroup))]
-    [Unity.Entities.WorldSystemFilter(Unity.Entities.WorldSystemFilterFlags.LocalSimulation | Unity.Entities.WorldSystemFilterFlags.ClientSimulation | Unity.Entities.WorldSystemFilterFlags.ServerSimulation)]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation |
+                       WorldSystemFilterFlags.ServerSimulation)]
     public partial struct TimelineTimeScaleTrackSystem : ISystem
     {
         private TrackBlendImpl<float, TimelineTimeScaleAnimated> _blendImpl;

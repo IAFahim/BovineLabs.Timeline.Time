@@ -8,7 +8,8 @@ namespace BovineLabs.Timeline.Time
     [UpdateInGroup(typeof(ScheduleSystemGroup))]
     [UpdateAfter(typeof(ClockUpdateSystem))]
     [UpdateBefore(typeof(TimerUpdateSystem))]
-    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ServerSimulation)]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation |
+                       WorldSystemFilterFlags.ServerSimulation)]
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
         [BurstCompile]

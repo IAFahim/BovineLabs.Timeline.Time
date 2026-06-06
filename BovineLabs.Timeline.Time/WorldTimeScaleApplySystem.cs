@@ -8,7 +8,8 @@ namespace BovineLabs.Timeline.Time
 {
     [BurstCompile]
     [UpdateInGroup(typeof(PresentationSystemGroup))]
-    [Unity.Entities.WorldSystemFilter(Unity.Entities.WorldSystemFilterFlags.LocalSimulation | Unity.Entities.WorldSystemFilterFlags.ClientSimulation | Unity.Entities.WorldSystemFilterFlags.ServerSimulation)]
+    [WorldSystemFilter(WorldSystemFilterFlags.LocalSimulation | WorldSystemFilterFlags.ClientSimulation |
+                       WorldSystemFilterFlags.ServerSimulation)]
     public unsafe partial struct WorldTimeScaleApplySystem : ISystem
     {
 #if UNITY_EDITOR
