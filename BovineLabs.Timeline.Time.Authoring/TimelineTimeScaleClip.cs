@@ -2,6 +2,7 @@ using BovineLabs.Core.Authoring.EntityCommands;
 using BovineLabs.Essence.Authoring;
 using BovineLabs.Timeline.Authoring;
 using BovineLabs.Timeline.Data;
+using BovineLabs.Timeline.Time.Data.Builders;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Timeline;
@@ -21,16 +22,14 @@ namespace BovineLabs.Timeline.Time.Authoring
 
         public override void Bake(Entity clipEntity, BakingContext context)
         {
-            var commands = new BakerCommands(context.Baker, clipEntity);
-
-            commands.SetComponent(new TrackBinding { Value = context.Timer });
-
-            commands.AddComponent(new TimelineTimeScaleAnimated
+            var builder = new TimelineTimeScaleBuilder
             {
                 AuthoredData = timeScale,
                 StatKey = stat != null ? stat.Key : default,
                 StatEntity = context.Binding != null ? context.Binding.Target : Entity.Null
-            });
+            };
+            var commands = new BakerCommands(context.Baker, clipEntity);
+            builder.ApplyTo(ref commands);
 
             base.Bake(clipEntity, context);
         }

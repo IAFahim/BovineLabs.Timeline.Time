@@ -3,6 +3,7 @@ using System.ComponentModel;
 using BovineLabs.Core.Authoring.EntityCommands;
 using BovineLabs.Essence.Authoring;
 using BovineLabs.Timeline.Authoring;
+using BovineLabs.Timeline.Time.Data.Builders;
 using UnityEngine.Timeline;
 
 namespace BovineLabs.Timeline.Time.Authoring
@@ -16,8 +17,9 @@ namespace BovineLabs.Timeline.Time.Authoring
     {
         protected override void Bake(BakingContext context)
         {
+            var builder = new TimelineTimeScaleTrackBuilder();
             var commands = new BakerCommands(context.Baker, context.Timer);
-            commands.AddComponent(new TimelineTimeScaleMultiplier { Value = 1f });
+            builder.ApplyTo(ref commands);
             base.Bake(context);
         }
     }
