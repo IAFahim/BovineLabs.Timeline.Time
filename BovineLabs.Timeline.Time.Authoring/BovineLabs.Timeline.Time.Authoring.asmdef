@@ -9,6 +9,7 @@
     "BovineLabs.Essence.Authoring",
     "BovineLabs.Essence.Data",
     "BovineLabs.Reaction.Authoring",
+    "BovineLabs.Reaction.Data",
     "BovineLabs.Timeline.Authoring",
     "BovineLabs.Timeline.Data",
     "BovineLabs.Timeline.Time",
