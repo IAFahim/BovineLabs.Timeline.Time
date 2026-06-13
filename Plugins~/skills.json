@@ -2,7 +2,7 @@
   {
     "id": "unity-track-timeline-timescale",
     "displayName": "Track Timeline Timescale",
-    "description": "Master of TimelineTimeScaleTrack + TimelineTimeScaleClip (package BovineLabs.Timeline.Time) — stat-driven per-timeline playback speed, the StatAuthoring track binding, StatDefaults setup, and the frozen-timeline stat trap (buffer present, key missing → 0). Portable to any project containing the package; worked example from vex-ee. Use when a designer asks to \"slow this cutscene\" or \"make timeline speed follow a stat\"."
+    "description": "Master of TimelineTimeScaleTrack + TimelineTimeScaleClip (package BovineLabs.Timeline.Time) — stat-driven per-timeline playback speed, the StatAuthoring track binding, StatDefaults setup, and the frozen-timeline stat trap (buffer present, key missing → 0). Portable to any project containing the package; worked example from vex-ee."
   },
   {
     "id": "unity-track-world-timescale",
