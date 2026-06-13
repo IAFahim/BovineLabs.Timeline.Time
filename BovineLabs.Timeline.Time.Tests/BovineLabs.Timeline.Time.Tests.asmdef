@@ -3,6 +3,7 @@
   "rootNamespace": "",
   "references": [
     "BovineLabs.Core",
+    "BovineLabs.Core.Extensions",
     "BovineLabs.Essence.Data",
     "BovineLabs.Testing",
     "BovineLabs.Timeline.Time",

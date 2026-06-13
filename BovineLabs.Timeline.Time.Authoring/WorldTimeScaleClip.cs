@@ -10,7 +10,8 @@ namespace BovineLabs.Timeline.Time.Authoring
     public class WorldTimeScaleClip : DOTSClip, ITimelineClipAsset
     {
         [Tooltip(
-            "Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.")]
+            "Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward. " +
+            "WARNING: timeScale = 0 on a LOOPING clip never deactivates and soft-locks variable-delta GameTime with no recovery.")]
         [Range(0f, 10f)]
         public float timeScale = 0.1f;
 

@@ -6,6 +6,7 @@ using BovineLabs.Timeline.Data;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace BovineLabs.Timeline.Time
 {
@@ -73,9 +74,11 @@ namespace BovineLabs.Timeline.Time
             {
                 if (animated.StatKey.Value != 0 && animated.StatEntity != Entity.Null &&
                     Stats.TryGetBuffer(animated.StatEntity, out var statsBuffer))
-                    animated.Value = statsBuffer.AsMap().GetValueFloat(animated.StatKey);
+                    animated.Value = statsBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
                 else
                     animated.Value = animated.AuthoredData;
+
+                animated.Value = math.max(animated.Value, StatSpeed.MinMultiplier);
             }
         }
 

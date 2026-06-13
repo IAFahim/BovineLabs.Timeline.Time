@@ -71,8 +71,8 @@ namespace BovineLabs.Timeline.Time
                 var value = 0f;
                 if (statEntity != Entity.Null && this.Stats.TryGetBuffer(statEntity, out var buffer))
                 {
-                    found = true;
-                    value = buffer.GetValueFloat(map.Stat);
+                    found = buffer.AsMap().TryGetValue(map.Stat, out var sv);
+                    value = found ? sv.ValueFloat : 0f;
                 }
 
                 multiplier.Value *= StatSpeed.Resolve(map, found, value);

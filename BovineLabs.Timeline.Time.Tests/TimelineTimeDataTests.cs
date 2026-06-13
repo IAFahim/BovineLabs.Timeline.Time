@@ -1,6 +1,9 @@
+using BovineLabs.Core.Iterators;
 using BovineLabs.Essence.Data;
+using BovineLabs.Testing;
 using NUnit.Framework;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace BovineLabs.Timeline.Time.Tests
 {
@@ -113,6 +116,92 @@ namespace BovineLabs.Timeline.Time.Tests
             var a = new WorldTimeScaleAnimated { Value = 0.0f };
             a.Value = 3.0f;
             Assert.AreEqual(3.0f, a.Value);
+        }
+    }
+
+    [TestFixture]
+    public class StatSpeedResolveTests
+    {
+        [Test]
+        public void Resolve_NotFound_ReturnsDefaultNotZero()
+        {
+            var map = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var result = StatSpeed.Resolve(map, false, 0f);
+
+            Assert.AreEqual(1f, result);
+            Assert.AreNotEqual(0f, result);
+        }
+
+        [Test]
+        public void Resolve_FoundZero_ClampsToMinNotZero()
+        {
+            var map = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var result = StatSpeed.Resolve(map, true, 0f);
+
+            Assert.AreEqual(StatSpeed.MinMultiplier, result);
+            Assert.AreNotEqual(0f, result);
+        }
+    }
+
+    [TestFixture]
+    public class StatMissingKeyMultiplierTests : ECSTestsFixture
+    {
+        private const ushort PresentKey = 1;
+        private const ushort AbsentKey = 2;
+
+        [Test]
+        public void SpeedFromStat_BufferPresentKeyAbsent_ResolvesToDefaultNotZero()
+        {
+            var statBuffer = this.CreateStatBuffer();
+            var map = new TimelineSpeedFromStat { Stat = AbsentKey, Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var found = statBuffer.AsMap().TryGetValue(map.Stat, out var sv);
+            var value = found ? sv.ValueFloat : 0f;
+            var multiplier = StatSpeed.Resolve(map, found, value);
+
+            Assert.IsFalse(found);
+            Assert.AreEqual(1f, multiplier);
+            Assert.AreNotEqual(0f, multiplier);
+        }
+
+        [Test]
+        public void TimeScaleTrack_BufferPresentKeyAbsent_FallsBackPositiveNotZero()
+        {
+            var statBuffer = this.CreateStatBuffer();
+            var animated = new TimelineTimeScaleAnimated { AuthoredData = 1f, StatKey = AbsentKey };
+
+            var read = statBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
+            var multiplier = math.max(read, StatSpeed.MinMultiplier);
+
+            Assert.AreEqual(1f, multiplier);
+            Assert.AreNotEqual(0f, multiplier);
+        }
+
+        [Test]
+        public void TimeScaleTrack_AuthoredZero_FlooredToMinNotZero()
+        {
+            var statBuffer = this.CreateStatBuffer();
+            var animated = new TimelineTimeScaleAnimated { AuthoredData = 0f, StatKey = AbsentKey };
+
+            var read = statBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
+            var multiplier = math.max(read, StatSpeed.MinMultiplier);
+
+            Assert.AreEqual(StatSpeed.MinMultiplier, multiplier);
+            Assert.AreNotEqual(0f, multiplier);
+        }
+
+        private DynamicBuffer<Stat> CreateStatBuffer()
+        {
+            var entity = this.Manager.CreateEntity(typeof(Stat));
+            var buffer = this.Manager.GetBuffer<Stat>(entity)
+                .InitializeHashMap<Stat, StatKey, StatValue>(0, 64);
+
+            var map = buffer.AsMap();
+            map.Add(PresentKey, new StatValue { Added = 100, Multi = 1f });
+
+            return this.Manager.GetBuffer<Stat>(entity);
         }
     }
 }

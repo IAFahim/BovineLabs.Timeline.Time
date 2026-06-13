@@ -18,6 +18,8 @@ namespace BovineLabs.Timeline.Time
 
     public static class StatSpeed
     {
+        public const float MinMultiplier = 0.05f;
+
         public static float Resolve(in TimelineSpeedFromStat map, bool found, float stat)
         {
             return found ? math.clamp(stat, map.Min, map.Max) : map.Default;
