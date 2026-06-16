@@ -10,6 +10,7 @@ namespace BovineLabs.Timeline.Time
     using Unity.Burst;
     using Unity.Collections;
     using Unity.Entities;
+    using Unity.Mathematics;
 
     [UpdateInGroup(typeof(TimelineComponentAnimationGroup))]
     [UpdateAfter(typeof(TimelineTimeScaleTrackSystem))]
@@ -75,7 +76,13 @@ namespace BovineLabs.Timeline.Time
                     value = found ? sv.ValueFloat : 0f;
                 }
 
-                multiplier.Value *= StatSpeed.Resolve(map, found, value);
+                multiplier.Value *= math.max(StatSpeed.Resolve(map, found, value), StatSpeed.MinMultiplier);
+
+                // Hard-floor the COMPOUNDED multiplier too: per-factor flooring keeps each factor positive
+                // but a product of several factors could still dip below the safety floor. 0.05 is the
+                // package's safety floor (matches TimelineTimeScaleTrackSystem), so the timeline never
+                // approaches a frozen clock regardless of how many speed sources stack.
+                multiplier.Value = math.max(multiplier.Value, StatSpeed.MinMultiplier);
             }
         }
     }
