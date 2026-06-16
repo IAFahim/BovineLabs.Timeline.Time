@@ -25,6 +25,8 @@ namespace BovineLabs.Timeline.Time.Authoring
         {
             public override void Bake(TimelineSpeedFromStatAuthoring authoring)
             {
+                this.DependsOn(authoring.Stat);
+
                 var entity = this.GetEntity(TransformUsageFlags.None);
 
                 this.AddComponent(entity, new TimelineSpeedFromStat

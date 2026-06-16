@@ -21,6 +21,8 @@ namespace BovineLabs.Timeline.Time.Authoring
 
         public override void Bake(Entity clipEntity, BakingContext context)
         {
+            context.Baker.DependsOn(stat);
+
             var builder = new TimelineTimeScaleBuilder
             {
                 AuthoredData = timeScale,
