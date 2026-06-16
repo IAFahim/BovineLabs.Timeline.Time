@@ -10,7 +10,6 @@
     "BovineLabs.Timeline.Data",
     "BovineLabs.Timeline.EntityLinks",
     "BovineLabs.Timeline.EntityLinks.Data",
-    "BovineLabs.HitStop.Data",
     "BovineLabs.Timeline.Time.Data",
     "Unity.Burst",
     "Unity.Collections",

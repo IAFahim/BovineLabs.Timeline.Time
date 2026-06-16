@@ -1,7 +1,9 @@
 using BovineLabs.Core.Utility;
 using Unity.Burst;
 using Unity.Entities;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace BovineLabs.Timeline.Time
