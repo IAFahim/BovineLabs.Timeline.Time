@@ -18,34 +18,34 @@ namespace BovineLabs.Timeline.Time
                        WorldSystemFilterFlags.ServerSimulation)]
     public partial struct TimelineSpeedFromStatSystem : ISystem
     {
-        private UnsafeComponentLookup<EntityLinkSource> sources;
-        private UnsafeBufferLookup<EntityLinkEntry> entries;
-        private ComponentLookup<Targets> targets;
-        private BufferLookup<Stat> stats;
+        private UnsafeComponentLookup<EntityLinkSource> _sources;
+        private UnsafeBufferLookup<EntityLinkEntry> _entries;
+        private ComponentLookup<Targets> _targets;
+        private BufferLookup<Stat> _stats;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            this.sources = state.GetUnsafeComponentLookup<EntityLinkSource>(true);
-            this.entries = state.GetUnsafeBufferLookup<EntityLinkEntry>(true);
-            this.targets = state.GetComponentLookup<Targets>(true);
-            this.stats = state.GetBufferLookup<Stat>(true);
+            this._sources = state.GetUnsafeComponentLookup<EntityLinkSource>(true);
+            this._entries = state.GetUnsafeBufferLookup<EntityLinkEntry>(true);
+            this._targets = state.GetComponentLookup<Targets>(true);
+            this._stats = state.GetBufferLookup<Stat>(true);
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            this.sources.Update(ref state);
-            this.entries.Update(ref state);
-            this.targets.Update(ref state);
-            this.stats.Update(ref state);
+            this._sources.Update(ref state);
+            this._entries.Update(ref state);
+            this._targets.Update(ref state);
+            this._stats.Update(ref state);
 
             state.Dependency = new ScaleJob
             {
-                Sources = this.sources,
-                Entries = this.entries,
-                Targets = this.targets,
-                Stats = this.stats,
+                Sources = this._sources,
+                Entries = this._entries,
+                Targets = this._targets,
+                Stats = this._stats,
             }.ScheduleParallel(state.Dependency);
         }
 
@@ -81,7 +81,7 @@ namespace BovineLabs.Timeline.Time
                 // Hard-floor the COMPOUNDED multiplier too: per-factor flooring keeps each factor positive
                 // but a product of several factors could still dip below the safety floor. 0.05 is the
                 // package's safety floor (matches TimelineTimeScaleTrackSystem), so the timeline never
-                // approaches a frozen clock regardless of how many speed sources stack.
+                // approaches a frozen clock regardless of how many speed _sources stack.
                 multiplier.Value = math.max(multiplier.Value, StatSpeed.MinMultiplier);
             }
         }

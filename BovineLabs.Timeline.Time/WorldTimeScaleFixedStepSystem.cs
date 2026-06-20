@@ -8,34 +8,34 @@ namespace BovineLabs.Timeline.Time
                        WorldSystemFilterFlags.ServerSimulation)]
     public partial class WorldTimeScaleFixedStepSystem : SystemBase
     {
-        private FixedStepSimulationSystemGroup fixedStep;
-        private float baseTimestep;
-        private bool captured;
+        private FixedStepSimulationSystemGroup _fixedStep;
+        private float _baseTimestep;
+        private bool _captured;
 
         protected override void OnCreate()
         {
             this.RequireForUpdate<WorldTimeScale>();
-            this.fixedStep = this.World.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
-            this.Enabled = this.fixedStep != null;
+            this._fixedStep = this.World.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
+            this.Enabled = this._fixedStep != null;
         }
 
         protected override void OnUpdate()
         {
-            if (!this.captured)
+            if (!this._captured)
             {
-                this.baseTimestep = math.max(0.0001f, this.fixedStep.Timestep);
-                this.captured = true;
+                this._baseTimestep = math.max(0.0001f, this._fixedStep.Timestep);
+                this._captured = true;
             }
 
             var worldScale = SystemAPI.GetSingleton<WorldTimeScale>();
             var scale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
 
-            var target = worldScale.ScaleFixedDeltaTime ? this.baseTimestep * scale : this.baseTimestep;
+            var target = worldScale.ScaleFixedDeltaTime ? this._baseTimestep * scale : this._baseTimestep;
             target = math.max(0.0001f, target);
 
-            if (math.abs(this.fixedStep.Timestep - target) > 1e-6f)
+            if (math.abs(this._fixedStep.Timestep - target) > 1e-6f)
             {
-                this.fixedStep.Timestep = target;
+                this._fixedStep.Timestep = target;
             }
         }
     }
