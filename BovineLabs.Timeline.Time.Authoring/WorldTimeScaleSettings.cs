@@ -20,10 +20,16 @@ namespace BovineLabs.Timeline.Time.Authoring
         public override void Bake(Baker<SettingsAuthoring> baker)
         {
             var entity = baker.GetEntity(TransformUsageFlags.None);
+
+            // Floor the baked scale the same way WorldTimeScaleClip does: a true zero (or negative) DefaultScale soft-locks
+            // variable-delta GameTime with no recovery (and a negative value throws from UnityEngine.Time.timeScale every frame),
+            // because IsActive=false makes both apply systems fall back to DefaultScale unconditionally.
+            var safeScale = Mathf.Max(WorldTimeScaleClip.MinScale, defaultTimeScale);
+
             baker.AddComponent(entity, new WorldTimeScale
             {
-                DefaultScale = defaultTimeScale,
-                ActiveScale = defaultTimeScale,
+                DefaultScale = safeScale,
+                ActiveScale = safeScale,
                 IsActive = false,
                 ScaleFixedDeltaTime = scaleFixedDeltaTime,
                 DefaultFixedDeltaTime = defaultFixedDeltaTime

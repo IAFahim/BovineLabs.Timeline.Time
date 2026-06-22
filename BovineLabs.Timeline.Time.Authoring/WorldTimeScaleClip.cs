@@ -9,6 +9,12 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     public class WorldTimeScaleClip : DOTSClip, ITimelineClipAsset
     {
+        /// <summary>
+        /// Lower bound for the baked world time scale. A true zero soft-locks variable-delta GameTime with no recovery
+        /// (especially on a looping clip that never deactivates), so the baked value is floored to this minimum.
+        /// </summary>
+        public const float MinScale = 0.05f;
+
         [Tooltip(
             "Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward. " +
             "WARNING: timeScale = 0 on a LOOPING clip never deactivates and soft-locks variable-delta GameTime with no recovery.")]
@@ -20,10 +26,11 @@ namespace BovineLabs.Timeline.Time.Authoring
 
         public override void Bake(Entity clipEntity, BakingContext context)
         {
+            var safe = Mathf.Max(MinScale, timeScale);
             var builder = new WorldTimeScaleBuilder
             {
-                AuthoredData = timeScale,
-                Value = timeScale
+                AuthoredData = safe,
+                Value = safe
             };
             var commands = new BakerCommands(context.Baker, clipEntity);
             builder.ApplyTo(ref commands);

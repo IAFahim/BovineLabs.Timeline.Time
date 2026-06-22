@@ -38,5 +38,23 @@ namespace BovineLabs.Timeline.Time
                 this._fixedStep.Timestep = target;
             }
         }
+
+        protected override void OnStopRunning()
+        {
+            this.RestoreBaseTimestep();
+        }
+
+        protected override void OnDestroy()
+        {
+            this.RestoreBaseTimestep();
+        }
+
+        private void RestoreBaseTimestep()
+        {
+            if (this._captured && this._fixedStep != null)
+            {
+                this._fixedStep.Timestep = this._baseTimestep;
+            }
+        }
     }
 }
