@@ -17,11 +17,6 @@ namespace BovineLabs.Timeline.Time
     public partial struct WorldTimeScaleSystem : ISystem
     {
         [BurstCompile]
-        public void OnCreate(ref SystemState state)
-        {
-        }
-
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             var mix = new NativeReference<MixData<float>>(state.WorldUpdateAllocator)

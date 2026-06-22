@@ -8,7 +8,6 @@ using BovineLabs.Timeline.EntityLinks.Data;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace BovineLabs.Timeline.Time
 {
@@ -58,29 +57,27 @@ namespace BovineLabs.Timeline.Time
             [ReadOnly] public ComponentLookup<Targets> Targets;
             [ReadOnly] public BufferLookup<Stat> Stats;
 
-            private void Execute(Entity entity, in TimelineSpeedFromStat map,
+            private void Execute(Entity entity, in TimelineSpeedFromStat config,
                 ref TimelineTimeScaleMultiplier multiplier)
             {
-                var resolvedTargets = Targets.TryGetComponent(entity, out var t) ? t : default;
+                var targets = Targets.TryGetComponent(entity, out var t) ? t : default;
 
                 var statEntity =
-                    EntityLinkResolver.TryResolve(entity, resolvedTargets, map.ReadRootFrom, map.LinkKey, Sources,
+                    EntityLinkResolver.TryResolve(entity, targets, config.ReadRootFrom, config.LinkKey, Sources,
                         Entries, out var linked)
                     && linked != Entity.Null
                         ? linked
-                        : resolvedTargets.Get(map.Fallback, entity);
+                        : targets.Get(config.Fallback, entity);
 
                 var found = false;
                 var value = 0f;
                 if (statEntity != Entity.Null && Stats.TryGetBuffer(statEntity, out var buffer))
                 {
-                    found = buffer.AsMap().TryGetValue(map.Stat, out var sv);
-                    value = found ? sv.ValueFloat : 0f;
+                    found = buffer.AsMap().TryGetValue(config.Stat, out var statValue);
+                    value = found ? statValue.ValueFloat : 0f;
                 }
 
-                multiplier.Value *= math.max(StatSpeed.Resolve(map, found, value), StatSpeed.MinMultiplier);
-
-                multiplier.Value = math.max(multiplier.Value, StatSpeed.MinMultiplier);
+                multiplier.Value = StatSpeed.Apply(multiplier.Value, config, found, value);
             }
         }
     }

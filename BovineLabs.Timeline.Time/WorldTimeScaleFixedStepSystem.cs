@@ -28,10 +28,7 @@ namespace BovineLabs.Timeline.Time
             }
 
             var worldScale = SystemAPI.GetSingleton<WorldTimeScale>();
-            var scale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
-
-            var target = worldScale.ScaleFixedDeltaTime ? _baseTimestep * scale : _baseTimestep;
-            target = math.max(0.0001f, target);
+            var target = WorldTimeScaleResolve.ResolveFixedDeltaTime(_baseTimestep, worldScale);
 
             if (math.abs(_fixedStep.Timestep - target) > 1e-6f) _fixedStep.Timestep = target;
         }

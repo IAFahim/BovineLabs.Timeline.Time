@@ -13,11 +13,6 @@ namespace BovineLabs.Timeline.Time
     public partial struct TimelineTimeScaleApplySystem : ISystem
     {
         [BurstCompile]
-        public void OnCreate(ref SystemState state)
-        {
-        }
-
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             state.Dependency = new ApplyTimeScaleJob().ScheduleParallel(state.Dependency);

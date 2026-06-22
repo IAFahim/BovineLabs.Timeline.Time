@@ -96,12 +96,8 @@ namespace BovineLabs.Timeline.Time
         private static void ApplyWorldTimeScalePacked(void* argumentsPtr, int argumentsSize)
         {
             ref var worldScale = ref BurstTrampoline.ArgumentsFromPtr<WorldTimeScale>(argumentsPtr, argumentsSize);
-            var targetScale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
-            var defaultFixedDeltaTime = Mathf.Max(0.0001f, worldScale.DefaultFixedDeltaTime);
-            var targetFixedDeltaTime = worldScale.ScaleFixedDeltaTime
-                ? defaultFixedDeltaTime * targetScale
-                : defaultFixedDeltaTime;
-            targetFixedDeltaTime = Mathf.Max(0.0001f, targetFixedDeltaTime);
+            var targetScale = WorldTimeScaleResolve.ResolveScale(worldScale);
+            var targetFixedDeltaTime = WorldTimeScaleResolve.ResolveFixedDeltaTime(worldScale.DefaultFixedDeltaTime, worldScale);
 
             if (Mathf.Abs(UnityEngine.Time.timeScale - targetScale) > 0.001f) UnityEngine.Time.timeScale = targetScale;
 

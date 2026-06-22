@@ -146,6 +146,73 @@ namespace BovineLabs.Timeline.Time.Tests
     }
 
     [TestFixture]
+    public class StatSpeedFloorTests
+    {
+        [Test]
+        public void Floor_BelowMin_ReturnsMin()
+        {
+            Assert.AreEqual(StatSpeed.MinMultiplier, StatSpeed.Floor(0f));
+        }
+
+        [Test]
+        public void Floor_AboveMin_ReturnsInput()
+        {
+            Assert.AreEqual(2f, StatSpeed.Floor(2f));
+        }
+
+        [Test]
+        public void Floor_NaN_ReturnsMin()
+        {
+            Assert.AreEqual(StatSpeed.MinMultiplier, StatSpeed.Floor(float.NaN));
+        }
+    }
+
+    [TestFixture]
+    public class StatSpeedApplyTests
+    {
+        [Test]
+        public void Apply_NotFound_UsesDefaultThenFloors()
+        {
+            var config = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 2f };
+
+            var result = StatSpeed.Apply(1f, config, false, 0f);
+
+            Assert.AreEqual(2f, result);
+        }
+
+        [Test]
+        public void Apply_FoundClampedAndFloored()
+        {
+            var config = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var result = StatSpeed.Apply(1f, config, true, 0f);
+
+            Assert.AreEqual(StatSpeed.MinMultiplier, result);
+        }
+
+        [Test]
+        public void Apply_IncomingBelowMin_FlooredByOuterMax()
+        {
+            var config = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var result = StatSpeed.Apply(0.01f, config, true, 1f);
+
+            Assert.AreEqual(StatSpeed.MinMultiplier, result);
+        }
+
+        [Test]
+        public void Apply_CompoundMultiply_StaysAtOrAboveMin()
+        {
+            var config = new TimelineSpeedFromStat { Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+
+            var result = StatSpeed.Apply(0.5f, config, true, 0.5f);
+
+            Assert.AreEqual(0.25f, result);
+            Assert.GreaterOrEqual(result, StatSpeed.MinMultiplier);
+        }
+    }
+
+    [TestFixture]
     public class StatMissingKeyMultiplierTests : ECSTestsFixture
     {
         private const ushort PresentKey = 1;
