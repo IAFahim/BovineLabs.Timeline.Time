@@ -9,10 +9,6 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     public class WorldTimeScaleClip : DOTSClip, ITimelineClipAsset
     {
-        /// <summary>
-        /// Lower bound for the baked world time scale. A true zero soft-locks variable-delta GameTime with no recovery
-        /// (especially on a looping clip that never deactivates), so the baked value is floored to this minimum.
-        /// </summary>
         public const float MinScale = 0.05f;
 
         [Tooltip(

@@ -1,10 +1,10 @@
+using BovineLabs.Essence.Data;
+using BovineLabs.Reaction.Data.Core;
+using Unity.Entities;
+using Unity.Mathematics;
+
 namespace BovineLabs.Timeline.Time
 {
-    using BovineLabs.Essence.Data;
-    using BovineLabs.Reaction.Data.Core;
-    using Unity.Entities;
-    using Unity.Mathematics;
-
     public struct TimelineSpeedFromStat : IComponentData
     {
         public Target ReadRootFrom;

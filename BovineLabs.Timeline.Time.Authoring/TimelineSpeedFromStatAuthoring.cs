@@ -1,11 +1,11 @@
+using BovineLabs.Essence.Authoring;
+using BovineLabs.Reaction.Data.Core;
+using Unity.Entities;
+using UnityEngine;
+using UnityEngine.Playables;
+
 namespace BovineLabs.Timeline.Time.Authoring
 {
-    using BovineLabs.Essence.Authoring;
-    using BovineLabs.Reaction.Data.Core;
-    using Unity.Entities;
-    using UnityEngine;
-    using UnityEngine.Playables;
-
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayableDirector))]
     public class TimelineSpeedFromStatAuthoring : MonoBehaviour
@@ -15,8 +15,7 @@ namespace BovineLabs.Timeline.Time.Authoring
         public Target Fallback = Target.Self;
         public StatSchemaObject Stat;
 
-        [Min(0.0001f)]
-        public float Min = 0.05f;
+        [Min(0.0001f)] public float Min = 0.05f;
 
         public float Max = 100f;
         public float Default = 1f;
@@ -25,19 +24,19 @@ namespace BovineLabs.Timeline.Time.Authoring
         {
             public override void Bake(TimelineSpeedFromStatAuthoring authoring)
             {
-                this.DependsOn(authoring.Stat);
+                DependsOn(authoring.Stat);
 
-                var entity = this.GetEntity(TransformUsageFlags.None);
+                var entity = GetEntity(TransformUsageFlags.None);
 
                 if (authoring.Max < authoring.Min)
-                {
-                    Debug.LogWarning($"{nameof(TimelineSpeedFromStatAuthoring)}: Max ({authoring.Max}) < Min ({authoring.Min}); clamping Max to Min.", authoring);
-                }
+                    Debug.LogWarning(
+                        $"{nameof(TimelineSpeedFromStatAuthoring)}: Max ({authoring.Max}) < Min ({authoring.Min}); clamping Max to Min.",
+                        authoring);
 
                 var max = Mathf.Max(authoring.Min, authoring.Max);
                 var def = Mathf.Clamp(authoring.Default, authoring.Min, max);
 
-                this.AddComponent(entity, new TimelineSpeedFromStat
+                AddComponent(entity, new TimelineSpeedFromStat
                 {
                     ReadRootFrom = authoring.ReadRootFrom,
                     LinkKey = authoring.LinkKey,
@@ -45,10 +44,10 @@ namespace BovineLabs.Timeline.Time.Authoring
                     Stat = authoring.Stat != null ? authoring.Stat.Key : default,
                     Min = authoring.Min,
                     Max = max,
-                    Default = def,
+                    Default = def
                 });
 
-                this.AddComponent(entity, new TimelineTimeScaleMultiplier { Value = 1f });
+                AddComponent(entity, new TimelineTimeScaleMultiplier { Value = 1f });
             }
         }
     }

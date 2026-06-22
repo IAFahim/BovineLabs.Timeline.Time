@@ -8,53 +8,47 @@ namespace BovineLabs.Timeline.Time
                        WorldSystemFilterFlags.ServerSimulation)]
     public partial class WorldTimeScaleFixedStepSystem : SystemBase
     {
-        private FixedStepSimulationSystemGroup _fixedStep;
         private float _baseTimestep;
         private bool _captured;
+        private FixedStepSimulationSystemGroup _fixedStep;
 
         protected override void OnCreate()
         {
-            this.RequireForUpdate<WorldTimeScale>();
-            this._fixedStep = this.World.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
-            this.Enabled = this._fixedStep != null;
+            RequireForUpdate<WorldTimeScale>();
+            _fixedStep = World.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
+            Enabled = _fixedStep != null;
         }
 
         protected override void OnUpdate()
         {
-            if (!this._captured)
+            if (!_captured)
             {
-                this._baseTimestep = math.max(0.0001f, this._fixedStep.Timestep);
-                this._captured = true;
+                _baseTimestep = math.max(0.0001f, _fixedStep.Timestep);
+                _captured = true;
             }
 
             var worldScale = SystemAPI.GetSingleton<WorldTimeScale>();
             var scale = worldScale.IsActive ? worldScale.ActiveScale : worldScale.DefaultScale;
 
-            var target = worldScale.ScaleFixedDeltaTime ? this._baseTimestep * scale : this._baseTimestep;
+            var target = worldScale.ScaleFixedDeltaTime ? _baseTimestep * scale : _baseTimestep;
             target = math.max(0.0001f, target);
 
-            if (math.abs(this._fixedStep.Timestep - target) > 1e-6f)
-            {
-                this._fixedStep.Timestep = target;
-            }
+            if (math.abs(_fixedStep.Timestep - target) > 1e-6f) _fixedStep.Timestep = target;
         }
 
         protected override void OnStopRunning()
         {
-            this.RestoreBaseTimestep();
+            RestoreBaseTimestep();
         }
 
         protected override void OnDestroy()
         {
-            this.RestoreBaseTimestep();
+            RestoreBaseTimestep();
         }
 
         private void RestoreBaseTimestep()
         {
-            if (this._captured && this._fixedStep != null)
-            {
-                this._fixedStep.Timestep = this._baseTimestep;
-            }
+            if (_captured && _fixedStep != null) _fixedStep.Timestep = _baseTimestep;
         }
     }
 }

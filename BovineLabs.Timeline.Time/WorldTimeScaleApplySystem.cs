@@ -1,10 +1,10 @@
 using BovineLabs.Core.Utility;
 using Unity.Burst;
 using Unity.Entities;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace BovineLabs.Timeline.Time
 {
@@ -39,13 +39,13 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (!this.captured)
+            if (!captured)
             {
                 var baseValues = default(BaseTime);
                 Burst.CaptureBase.Data.Invoke(ref baseValues);
-                this.baseTimeScale = baseValues.TimeScale;
-                this.baseFixedDeltaTime = baseValues.FixedDeltaTime;
-                this.captured = true;
+                baseTimeScale = baseValues.TimeScale;
+                baseFixedDeltaTime = baseValues.FixedDeltaTime;
+                captured = true;
             }
 
             foreach (var worldScale in SystemAPI.Query<RefRO<WorldTimeScale>>())
@@ -55,24 +55,23 @@ namespace BovineLabs.Timeline.Time
         [BurstCompile]
         public void OnStopRunning(ref SystemState state)
         {
-            this.Restore();
+            Restore();
         }
 
         [BurstCompile]
         public void OnDestroy(ref SystemState state)
         {
-            this.Restore();
+            Restore();
         }
 
         private void Restore()
         {
-            // Idempotent: OnStopRunning is followed by OnDestroy on teardown, only restore once.
-            if (!this.captured)
+            if (!captured)
                 return;
 
-            this.captured = false;
+            captured = false;
 
-            var baseValues = new BaseTime { TimeScale = this.baseTimeScale, FixedDeltaTime = this.baseFixedDeltaTime };
+            var baseValues = new BaseTime { TimeScale = baseTimeScale, FixedDeltaTime = baseFixedDeltaTime };
             Burst.RestoreBase.Data.Invoke(ref baseValues);
         }
 

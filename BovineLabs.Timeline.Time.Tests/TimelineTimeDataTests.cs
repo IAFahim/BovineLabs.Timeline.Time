@@ -154,8 +154,9 @@ namespace BovineLabs.Timeline.Time.Tests
         [Test]
         public void SpeedFromStat_BufferPresentKeyAbsent_ResolvesToDefaultNotZero()
         {
-            var statBuffer = this.CreateStatBuffer();
-            var map = new TimelineSpeedFromStat { Stat = AbsentKey, Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+            var statBuffer = CreateStatBuffer();
+            var map = new TimelineSpeedFromStat
+                { Stat = AbsentKey, Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
 
             var found = statBuffer.AsMap().TryGetValue(map.Stat, out var sv);
             var value = found ? sv.ValueFloat : 0f;
@@ -169,7 +170,7 @@ namespace BovineLabs.Timeline.Time.Tests
         [Test]
         public void TimeScaleTrack_BufferPresentKeyAbsent_FallsBackPositiveNotZero()
         {
-            var statBuffer = this.CreateStatBuffer();
+            var statBuffer = CreateStatBuffer();
             var animated = new TimelineTimeScaleAnimated { AuthoredData = 1f, StatKey = AbsentKey };
 
             var read = statBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
@@ -182,7 +183,7 @@ namespace BovineLabs.Timeline.Time.Tests
         [Test]
         public void TimeScaleTrack_AuthoredZero_FlooredToMinNotZero()
         {
-            var statBuffer = this.CreateStatBuffer();
+            var statBuffer = CreateStatBuffer();
             var animated = new TimelineTimeScaleAnimated { AuthoredData = 0f, StatKey = AbsentKey };
 
             var read = statBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
@@ -194,14 +195,14 @@ namespace BovineLabs.Timeline.Time.Tests
 
         private DynamicBuffer<Stat> CreateStatBuffer()
         {
-            var entity = this.Manager.CreateEntity(typeof(Stat));
-            var buffer = this.Manager.GetBuffer<Stat>(entity)
+            var entity = Manager.CreateEntity(typeof(Stat));
+            var buffer = Manager.GetBuffer<Stat>(entity)
                 .InitializeHashMap<Stat, StatKey, StatValue>(0, 64);
 
             var map = buffer.AsMap();
             map.Add(PresentKey, new StatValue { Added = 100, Multi = 1f });
 
-            return this.Manager.GetBuffer<Stat>(entity);
+            return Manager.GetBuffer<Stat>(entity);
         }
     }
 }
