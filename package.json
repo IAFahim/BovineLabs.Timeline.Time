@@ -31,5 +31,17 @@
   ],
   "documentationUrl": "Documentation~/com.bovinelabs.timeline.time.md",
   "changelogUrl": "CHANGELOG.md",
-  "licensesUrl": "LICENSE.md"
+  "licensesUrl": "LICENSE.md",
+  "samples": [
+    {
+      "displayName": "Time Showcase",
+      "description": "Timeline time-scale surfaces: per-timeline slow-mo/fast/reverse, world bullet-time/freeze, and stat-driven playback speed.",
+      "path": "Sample~/Time Showcase"
+    },
+    {
+      "displayName": "SlowMo Demo",
+      "description": "Minimal WorldTimeScale slow-motion / hit-stop demo with eased entry.",
+      "path": "Sample~/SlowMo Demo"
+    }
+  ]
 }

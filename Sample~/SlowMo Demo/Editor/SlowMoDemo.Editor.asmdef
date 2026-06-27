@@ -1,0 +1,28 @@
+{
+    "name": "BovineLabs.Timeline.Time.Sample.SlowMoDemo",
+    "rootNamespace": "",
+    "references": [
+        "BovineLabs.Timeline.Time.Authoring",
+        "BovineLabs.Timeline.Core.Authoring",
+        "BovineLabs.Timeline.Authoring",
+        "Unity.Physics.Custom",
+        "Unity.Physics.Hybrid",
+        "Unity.Physics",
+        "Unity.Mathematics",
+        "Unity.Entities",
+        "Unity.Collections",
+        "Unity.Scenes",
+        "Unity.Timeline"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
