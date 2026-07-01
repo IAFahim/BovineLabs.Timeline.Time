@@ -15,7 +15,8 @@
     "Unity.Collections",
     "Unity.Entities",
     "Unity.Mathematics",
-    "BovineLabs.Reaction.Data"
+    "BovineLabs.Reaction.Data",
+    "BovineLabs.Reaction"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
