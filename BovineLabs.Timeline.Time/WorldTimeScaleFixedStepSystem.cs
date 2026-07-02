@@ -27,8 +27,11 @@ namespace BovineLabs.Timeline.Time
                 _captured = true;
             }
 
-            var worldScale = SystemAPI.GetSingleton<WorldTimeScale>();
-            var target = WorldTimeScaleResolve.ResolveFixedDeltaTime(_baseTimestep, worldScale);
+            // Tolerate duplicate WorldTimeScale entities (last wins), matching WorldTimeScaleApplySystem's foreach —
+            // GetSingleton would throw on a misconfiguration the sibling system silently accepts.
+            var target = _baseTimestep;
+            foreach (var worldScale in SystemAPI.Query<RefRO<WorldTimeScale>>())
+                target = WorldTimeScaleResolve.ResolveFixedDeltaTime(_baseTimestep, worldScale.ValueRO);
 
             if (math.abs(_fixedStep.Timestep - target) > 1e-6f) _fixedStep.Timestep = target;
         }

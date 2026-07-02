@@ -15,6 +15,8 @@ namespace BovineLabs.Timeline.Time.Authoring
         [SerializeField]
         private bool scaleFixedDeltaTime = true;
 
+        [Tooltip("Base classic fixedDeltaTime (seconds). Guarded against 0/negative which would drive physics to ~10kHz.")]
+        [Min(0.001f)]
         [SerializeField] private float defaultFixedDeltaTime = 0.02f;
 
         public override void Bake(Baker<SettingsAuthoring> baker)
@@ -29,7 +31,7 @@ namespace BovineLabs.Timeline.Time.Authoring
                 ActiveScale = safeScale,
                 IsActive = false,
                 ScaleFixedDeltaTime = scaleFixedDeltaTime,
-                DefaultFixedDeltaTime = defaultFixedDeltaTime
+                DefaultFixedDeltaTime = Mathf.Max(WorldTimeScaleResolve.MinFixedDeltaTime, defaultFixedDeltaTime)
             });
         }
     }
