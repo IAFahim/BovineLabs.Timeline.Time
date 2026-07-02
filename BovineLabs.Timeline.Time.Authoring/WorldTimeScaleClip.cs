@@ -12,9 +12,8 @@ namespace BovineLabs.Timeline.Time.Authoring
         public const float MinScale = 0.05f;
 
         [Tooltip(
-            "Global time scale for the entire world. 0 = Freeze Frame, 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward. " +
-            "WARNING: timeScale = 0 on a LOOPING clip never deactivates and soft-locks variable-delta GameTime with no recovery.")]
-        [Range(0f, 10f)]
+            "Global time scale for the entire world. 0.05 = near-freeze (min), 0.1 = Slow Mo, 1 = Normal, >1 = Fast Forward.")]
+        [Range(MinScale, 10f)]
         public float timeScale = 0.1f;
 
         public override double duration => 1;

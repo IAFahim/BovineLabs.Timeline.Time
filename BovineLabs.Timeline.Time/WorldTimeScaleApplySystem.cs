@@ -49,7 +49,11 @@ namespace BovineLabs.Timeline.Time
             }
 
             foreach (var worldScale in SystemAPI.Query<RefRO<WorldTimeScale>>())
-                Burst.WorldTimeScale.Data.Invoke(worldScale.ValueRO);
+            {
+                var ws = worldScale.ValueRO;
+                ws.DefaultFixedDeltaTime = baseFixedDeltaTime;
+                Burst.WorldTimeScale.Data.Invoke(ws);
+            }
         }
 
         [BurstCompile]
