@@ -44,9 +44,25 @@ namespace BovineLabs.Timeline.Time
             {
                 var baseValues = default(BaseTime);
                 Burst.CaptureBase.Data.Invoke(ref baseValues);
-                baseTimeScale = baseValues.TimeScale;
                 baseFixedDeltaTime = baseValues.FixedDeltaTime;
+
+                // Base timeScale = the authored DefaultScale (the contract's "not active" value), NOT the live
+                // Time.timeScale. Under CoreCLR there is no domain reload, so a prior play session's bullet-time
+                // clip can leave the global scaled (e.g. 0.03); capturing that would poison every future restore
+                // and everything would silently run in slow-mo. Take DefaultScale and clear any leftover scale.
+                var defaultScale = 1f;
+                foreach (var ws in SystemAPI.Query<RefRO<WorldTimeScale>>())
+                {
+                    defaultScale = ws.ValueRO.DefaultScale; // ponytail: first entity; multi-singleton isn't a real config
+                    break;
+                }
+
+                baseTimeScale = defaultScale;
                 captured = true;
+
+                // Write the clean base to the globals now (RestoreBasePacked no-ops when already correct), so a
+                // cross-session-poisoned Time.timeScale is cleared at the start of the session.
+                Restore(false);
             }
 
             var anyActive = false;
