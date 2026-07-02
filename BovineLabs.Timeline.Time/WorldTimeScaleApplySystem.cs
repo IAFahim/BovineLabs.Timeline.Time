@@ -15,6 +15,7 @@ namespace BovineLabs.Timeline.Time
     public unsafe partial struct WorldTimeScaleApplySystem : ISystem
     {
         private bool captured;
+        private bool wasActive;
         private float baseTimeScale;
         private float baseFixedDeltaTime;
 
@@ -48,32 +49,56 @@ namespace BovineLabs.Timeline.Time
                 captured = true;
             }
 
+            var anyActive = false;
             foreach (var worldScale in SystemAPI.Query<RefRO<WorldTimeScale>>())
             {
                 var ws = worldScale.ValueRO;
+                if (!ws.IsActive)
+                {
+                    // Idle: don't touch Time.timeScale/fixedDeltaTime — leave them to external owners
+                    // (e.g. a pause menu setting timeScale = 0). Re-asserting DefaultScale here would clobber it.
+                    continue;
+                }
+
+                anyActive = true;
                 ws.DefaultFixedDeltaTime = baseFixedDeltaTime;
                 Burst.WorldTimeScale.Data.Invoke(ws);
             }
+
+            // On the active -> idle transition, hand the globals back to the captured base exactly once, then
+            // stop writing so external code owns them again.
+            if (!anyActive && wasActive)
+            {
+                Restore(false);
+            }
+
+            wasActive = anyActive;
         }
 
         [BurstCompile]
         public void OnStopRunning(ref SystemState state)
         {
-            Restore();
+            Restore(true);
         }
 
         [BurstCompile]
         public void OnDestroy(ref SystemState state)
         {
-            Restore();
+            Restore(true);
         }
 
-        private void Restore()
+        // releaseCapture=true forgets the captured base (system stopping/destroyed → re-capture next run).
+        // releaseCapture=false keeps the original base (idle hand-off) so we never re-capture a paused value.
+        private void Restore(bool releaseCapture)
         {
             if (!captured)
                 return;
 
-            captured = false;
+            if (releaseCapture)
+            {
+                captured = false;
+                wasActive = false;
+            }
 
             var baseValues = new BaseTime { TimeScale = baseTimeScale, FixedDeltaTime = baseFixedDeltaTime };
             Burst.RestoreBase.Data.Invoke(ref baseValues);
