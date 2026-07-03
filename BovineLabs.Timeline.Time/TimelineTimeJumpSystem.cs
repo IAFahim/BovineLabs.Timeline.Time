@@ -80,10 +80,7 @@ namespace BovineLabs.Timeline.Time
                     return;
                 }
 
-                if (!EntityLinkResolver.TryResolve(binding.Value, targets, data.ListenOn, data.ListenLinkKey, LinkSources, Links, out var target))
-                {
-                    target = targets.Get(data.ListenOn, binding.Value);
-                }
+                data.Listen.TryResolve(binding.Value, targets, LinkSources, Links, out var target);
 
                 // The enableable EventsDirty flag is the non-polling gate: it's only set on frames something was
                 // actually written via ConditionEventWriter.Trigger, so we only touch the hashmap when it fired.

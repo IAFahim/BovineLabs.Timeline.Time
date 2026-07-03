@@ -1,5 +1,5 @@
-using BovineLabs.Essence.Data;
 using BovineLabs.Reaction.Data.Core;
+using BovineLabs.Timeline.EntityLinks.Data;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -7,10 +7,8 @@ namespace BovineLabs.Timeline.Time
 {
     public struct TimelineSpeedFromStat : IComponentData
     {
-        public Target ReadRootFrom;
-        public ushort LinkKey;
+        public StatSource Source;
         public Target Fallback;
-        public StatKey Stat;
         public float Min;
         public float Max;
         public float Default;

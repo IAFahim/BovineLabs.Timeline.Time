@@ -1,13 +1,12 @@
 using BovineLabs.Core.EntityCommands;
 using BovineLabs.Reaction.Data.Conditions;
-using BovineLabs.Reaction.Data.Core;
+using BovineLabs.Timeline.EntityLinks.Data;
 
 namespace BovineLabs.Timeline.Time.Data.Builders
 {
     public struct TimelineTimeJumpBuilder
     {
-        public Target ListenOn;
-        public ushort ListenLinkKey;
+        public EntityLinkRef Listen;
         public ConditionKey Event;
         public float FramesPerSecond;
 
@@ -16,8 +15,7 @@ namespace BovineLabs.Timeline.Time.Data.Builders
         {
             builder.AddComponent(new TimelineTimeJumpData
             {
-                ListenOn = ListenOn,
-                ListenLinkKey = ListenLinkKey,
+                Listen = Listen,
                 Event = Event,
                 FramesPerSecond = FramesPerSecond
             });

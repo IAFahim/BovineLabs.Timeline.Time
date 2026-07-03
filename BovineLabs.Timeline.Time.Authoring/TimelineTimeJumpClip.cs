@@ -13,11 +13,11 @@ namespace BovineLabs.Timeline.Time.Authoring
 {
     public sealed class TimelineTimeJumpClip : DOTSClip, ITimelineClipAsset
     {
-        [Tooltip("Which entity carries the incoming scrub event: the bound actor (Self) or one of its Targets slots.")]
-        public Target listenOn = Target.Self;
-
         [Tooltip("Optional link key; re-routes from the resolved listen target to its linked entity.")]
         public EntityLinkSchema listenLink;
+
+        [Tooltip("Which entity carries the incoming scrub event: the bound actor (Self) or one of its Targets slots.")]
+        public Target listenOn = Target.Self;
 
         [Tooltip("The condition event whose signed value is the number of frames to jump: negative rewinds, positive advances.")]
         public ConditionEventObject scrubEvent;
@@ -30,12 +30,9 @@ namespace BovineLabs.Timeline.Time.Authoring
 
         public override void Bake(Entity clipEntity, BakingContext context)
         {
-            EntityLinkAuthoringUtility.TryGetKey(listenLink, out var linkKey);
-
             var builder = new TimelineTimeJumpBuilder
             {
-                ListenOn = listenOn,
-                ListenLinkKey = linkKey,
+                Listen = EntityLinkAuthoringUtility.BakeRef(context.Baker, listenLink, listenOn),
                 Event = scrubEvent ? scrubEvent.Key : ConditionKey.Null,
                 FramesPerSecond = framesPerSecond < 1f ? 1f : framesPerSecond
             };

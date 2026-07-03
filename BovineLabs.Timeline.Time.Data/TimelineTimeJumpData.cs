@@ -1,6 +1,6 @@
 using BovineLabs.Reaction.Data.Conditions;
-using BovineLabs.Reaction.Data.Core;
 using BovineLabs.Timeline.Data.Schedular;
+using BovineLabs.Timeline.EntityLinks.Data;
 using Unity.Entities;
 using Unity.IntegerTime;
 
@@ -8,8 +8,7 @@ namespace BovineLabs.Timeline.Time
 {
     public struct TimelineTimeJumpData : IComponentData
     {
-        public Target ListenOn;
-        public ushort ListenLinkKey;
+        public EntityLinkRef Listen;
         public ConditionKey Event;
         public float FramesPerSecond;
     }

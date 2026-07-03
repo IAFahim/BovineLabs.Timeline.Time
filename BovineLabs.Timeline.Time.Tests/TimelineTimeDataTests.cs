@@ -1,6 +1,7 @@
 using BovineLabs.Core.Iterators;
 using BovineLabs.Essence.Data;
 using BovineLabs.Testing;
+using BovineLabs.Timeline.EntityLinks.Data;
 using NUnit.Framework;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -223,9 +224,12 @@ namespace BovineLabs.Timeline.Time.Tests
         {
             var statBuffer = CreateStatBuffer();
             var map = new TimelineSpeedFromStat
-                { Stat = AbsentKey, Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f };
+            {
+                Source = new StatSource { Stat = AbsentKey },
+                Min = StatSpeed.MinMultiplier, Max = 100f, Default = 1f,
+            };
 
-            var found = statBuffer.AsMap().TryGetValue(map.Stat, out var sv);
+            var found = statBuffer.AsMap().TryGetValue(map.Source.Stat, out var sv);
             var value = found ? sv.ValueFloat : 0f;
             var multiplier = StatSpeed.Resolve(map, found, value);
 

@@ -62,22 +62,9 @@ namespace BovineLabs.Timeline.Time
             {
                 var targets = Targets.TryGetComponent(entity, out var t) ? t : default;
 
-                var statEntity =
-                    EntityLinkResolver.TryResolve(entity, targets, config.ReadRootFrom, config.LinkKey, Sources,
-                        Entries, out var linked)
-                    && linked != Entity.Null
-                        ? linked
-                        : targets.Get(config.Fallback, entity);
+                var value = config.Source.Read(entity, targets, Sources, Entries, Stats, config.Default);
 
-                var found = false;
-                var value = 0f;
-                if (statEntity != Entity.Null && Stats.TryGetBuffer(statEntity, out var buffer))
-                {
-                    found = buffer.AsMap().TryGetValue(config.Stat, out var statValue);
-                    value = found ? statValue.ValueFloat : 0f;
-                }
-
-                multiplier.Value = StatSpeed.Apply(multiplier.Value, config, found, value);
+                multiplier.Value = StatSpeed.Apply(multiplier.Value, config, true, value);
             }
         }
     }

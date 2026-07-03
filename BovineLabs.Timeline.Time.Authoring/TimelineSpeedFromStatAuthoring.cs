@@ -1,5 +1,6 @@
 using BovineLabs.Essence.Authoring;
 using BovineLabs.Reaction.Data.Core;
+using BovineLabs.Timeline.EntityLinks.Data;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -38,10 +39,16 @@ namespace BovineLabs.Timeline.Time.Authoring
 
                 AddComponent(entity, new TimelineSpeedFromStat
                 {
-                    ReadRootFrom = authoring.ReadRootFrom,
-                    LinkKey = authoring.LinkKey,
+                    Source = new StatSource
+                    {
+                        Stat = authoring.Stat != null ? authoring.Stat.Key : default,
+                        Link = new EntityLinkRef
+                        {
+                            ReadRootFrom = authoring.ReadRootFrom,
+                            LinkKey = authoring.LinkKey,
+                        },
+                    },
                     Fallback = authoring.Fallback,
-                    Stat = authoring.Stat != null ? authoring.Stat.Key : default,
                     Min = authoring.Min,
                     Max = max,
                     Default = def
