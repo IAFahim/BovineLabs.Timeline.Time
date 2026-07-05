@@ -90,7 +90,14 @@ namespace BovineLabs.Timeline.Time
                     return;
                 }
 
-                if (!ConditionEvents[target].AsMap().TryGetValue(data.Event, out var frames) || frames == 0)
+                if (!ConditionEvents[target].AsMap().TryGetValue(data.Event, out var payload))
+                {
+                    return;
+                }
+
+                // Condition event values are now boxed in ConditionEventPayload; the frame count is written as an int.
+                var frames = payload.Read<int>();
+                if (frames == 0)
                 {
                     return;
                 }
