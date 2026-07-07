@@ -41,7 +41,7 @@ namespace BovineLabs.Timeline.Time.Authoring
                 {
                     Source = new StatSource
                     {
-                        Stat = authoring.Stat != null ? authoring.Stat.Key : default,
+                        Stat = authoring.Stat != null ? authoring.Stat.Key.ID : default,
                         Link = new EntityLinkRef
                         {
                             ReadRootFrom = authoring.ReadRootFrom,

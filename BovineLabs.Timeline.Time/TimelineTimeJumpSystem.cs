@@ -74,7 +74,7 @@ namespace BovineLabs.Timeline.Time
 
             private void Execute(in TrackBinding binding, in TimelineTimeJumpData data, in TimeTransform timeTransform, in DirectorRoot directorRoot)
             {
-                if (data.Event == ConditionKey.Null || binding.Value == Entity.Null ||
+                if (data.Event.Equals(ConditionKey.Null) || binding.Value == Entity.Null ||
                     !TargetsLookup.TryGetComponent(binding.Value, out var targets))
                 {
                     return;

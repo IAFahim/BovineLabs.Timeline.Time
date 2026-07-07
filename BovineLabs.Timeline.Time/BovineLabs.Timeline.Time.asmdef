@@ -7,6 +7,7 @@
     "BovineLabs.Core.Iterators",
     "BovineLabs.Essence.Data",
     "BovineLabs.Timeline",
+    "BovineLabs.Timeline.Core",
     "BovineLabs.Timeline.Data",
     "BovineLabs.Timeline.EntityLinks",
     "BovineLabs.Timeline.EntityLinks.Data",
