@@ -34,7 +34,7 @@ namespace BovineLabs.Timeline.Time.Authoring
             var builder = new TimelineTimeScaleBuilder
             {
                 AuthoredData = timeScale,
-                StatKey = stat != null ? stat.Key.ID : default,
+                StatKey = stat != null ? stat.Key : default,
                 StatEntity = statEntity
             };
             var commands = new BakerCommands(context.Baker, clipEntity);

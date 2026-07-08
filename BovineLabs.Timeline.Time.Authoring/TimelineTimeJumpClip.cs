@@ -33,7 +33,7 @@ namespace BovineLabs.Timeline.Time.Authoring
             var builder = new TimelineTimeJumpBuilder
             {
                 Listen = EntityLinkAuthoringUtility.BakeRef(context.Baker, listenLink, listenOn),
-                Event = scrubEvent ? new ConditionKey(scrubEvent.Key) : ConditionKey.Null,
+                Event = scrubEvent ? (ConditionKey)scrubEvent.Key : ConditionKey.Null,
                 FramesPerSecond = framesPerSecond < 1f ? 1f : framesPerSecond
             };
             var commands = new BakerCommands(context.Baker, clipEntity);
