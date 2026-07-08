@@ -12,7 +12,8 @@
         "Unity.Entities",
         "Unity.Collections",
         "Unity.Scenes",
-        "Unity.Timeline"
+        "Unity.Timeline",
+        "BovineLabs.Nerve"
     ],
     "includePlatforms": [
         "Editor"

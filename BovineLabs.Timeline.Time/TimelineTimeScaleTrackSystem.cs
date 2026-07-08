@@ -72,7 +72,7 @@ namespace BovineLabs.Timeline.Time
 
             private void Execute(ref TimelineTimeScaleAnimated animated)
             {
-                if (!animated.StatKey.Value.IsNull() && animated.StatEntity != Entity.Null &&
+                if (!animated.StatKey.Value.IsNull && animated.StatEntity != Entity.Null &&
                     Stats.TryGetBuffer(animated.StatEntity, out var statsBuffer))
                     animated.Value = statsBuffer.AsMap().GetValueFloat(animated.StatKey, animated.AuthoredData);
                 else
